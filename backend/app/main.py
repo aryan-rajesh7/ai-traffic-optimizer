@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 from supabase import create_client
 from fastapi.middleware.cors import CORSMiddleware
-
+from app.ingestion.tomtom import ingest_all_intersections
 
 load_dotenv()
 
@@ -36,3 +36,9 @@ async def health():
 async def test_db():
     result = supabase.table("intersections").select("*").execute()
     return {"intersections": result.data}
+
+@app.post("/ingest")
+async def ingest():
+    await ingest_all_intersections()
+    return {"status": "ok", "message": "Traffic data ingested successfully"}
+

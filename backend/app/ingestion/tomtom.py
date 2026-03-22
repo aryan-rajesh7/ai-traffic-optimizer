@@ -45,3 +45,32 @@ def get_intersection_ids() -> dict:
     return {row["name"]: row["id"] for row in result.data}
 
 
+async def store_sensor_reading(intersection_id: str, traffic_data: dict):
+    congestion_score = calculate_congestion_score(
+        traffic_data["current_speed"],
+        traffic_data["free_flow_speed"]
+    )
+    supabase.table("sensor_readings").insert({
+        "intersection_id": intersection_id,
+        "vehicle_count": 0,
+        "average_speed": traffic_data["current_speed"],
+        "congestion_score": congestion_score,
+        "source": "tomtom"
+    }).execute()
+
+async def ingest_all_intersections():
+    print("Getting traffic data")
+    intersection_ids = get_intersection_ids()
+    for intersection in INTERSECTIONS:
+        name = intersection["name"]
+        intersection_id = intersection_ids.get(name)
+        if not intersection_id:
+            print(f"Skipping {name} - not found in database")
+            continue
+        traffic_data = await fetch_traffic_data(
+            intersection["lat"],
+            intersection["lon"]
+        )
+        await store_sensor_reading(intersection_id, traffic_data)
+        print(f"Saved data for {name} - congestion: {calculate_congestion_score(traffic_data['current_speed'], traffic_data['free_flow_speed'])}")
+    print("Done!")
