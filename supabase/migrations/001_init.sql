@@ -34,3 +34,27 @@ create table signal_timings (
   applied_at timestamp with time zone default now()
 );
 
+
+-- Embeddings table for RAG
+create table embeddings (
+  id uuid default gen_random_uuid() primary key,
+  content text not null,
+  embedding vector(768),
+  source text not null,
+  created_at timestamp with time zone default now()
+);
+-- Predictions table
+create table predictions (
+  id uuid default gen_random_uuid() primary key,
+  intersection_id uuid references intersections(id),
+  congestion_score float not null,
+  predicted_at timestamp with time zone default now(),
+  model_used text not null
+);
+-- Seed some sample intersections
+insert into intersections (name, latitude, longitude, city) values
+  ('5th Ave & Broadway', 40.7549, -73.9840, 'New York'),
+  ('Market St & 5th St', 37.7836, -122.4089, 'San Francisco'),
+  ('Michigan Ave & Chicago Ave', 41.8966, -87.6239, 'Chicago'),
+  ('Sunset Blvd & Vine St', 34.0983, -118.3263, 'Los Angeles'),
+  ('Pike St & 1st Ave', 47.6086, -122.3408, 'Seattle');
