@@ -1,3 +1,5 @@
+-- Tables for each data
+
 -- Enable pgvector
 create extension if not exists vector;
 -- Intersections table
