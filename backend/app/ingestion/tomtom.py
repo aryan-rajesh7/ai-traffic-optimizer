@@ -5,7 +5,12 @@ from supabase import create_client
 
 load_dotenv()
 
-tom_apikey = os.getenv("TOMTOM_API_KEY")
+TOMTOM_API_KEY = os.getenv("TOMTOM_API_KEY")
+
+supabase = create_client(
+    os.getenv("SUPABASE_URL"),
+    os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+)
 
 INTERSECTIONS = [
     {"id": None, "name": "5th Ave & Broadway", "lat": 40.7549, "lon": -73.9840},
@@ -18,7 +23,7 @@ INTERSECTIONS = [
 async def fetch_traffic_data(lat: float, lon: float) -> dict:
     url = (
         f"https://api.tomtom.com/traffic/services/4/flowSegmentData/"
-        f"absolute/10/json?point={lat},{lon}&key={tom_apikey}"
+        f"absolute/10/json?point={lat},{lon}&key={TOMTOM_API_KEY}"
     )
     async with httpx.AsyncClient() as client:
         response = await client.get(url)
