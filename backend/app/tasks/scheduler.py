@@ -21,3 +21,11 @@ celery_app.conf.beat_schedule = {
     },
 }
 
+celery_app.conf.timezone = "UTC"
+
+@celery_app.task
+def ingest_traffic():
+    from app.ingestion.tomtom import ingest_all_intersections
+    print("Running scheduled traffic extraction...")
+    asyncio.run(ingest_all_intersections())
+    print("Scheduled data extraction complete!")
