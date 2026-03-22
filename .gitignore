@@ -1,4 +1,5 @@
 # Environment variables - NEVER commit these
+venv/
 .env
 .env.local
 .env.*.local
