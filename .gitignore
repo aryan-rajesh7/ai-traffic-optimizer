@@ -48,3 +48,10 @@ ml/data/
 # Logs
 *.log
 logs/
+
+# Celery
+celerybeat-schedule
+celerybeat-schedule.bak
+celerybeat-schedule.dir
+celerybeat-schedule.dat
+celerybeat.pid
