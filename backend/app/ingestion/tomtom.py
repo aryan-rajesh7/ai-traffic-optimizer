@@ -20,6 +20,7 @@ INTERSECTIONS = [
     {"id": None, "name": "Pike St & 1st Ave", "lat": 47.6086, "lon": -122.3408},
 ]
 
+
 async def fetch_traffic_data(lat: float, lon: float) -> dict:
     url = (
         f"https://api.tomtom.com/traffic/services/4/flowSegmentData/"
