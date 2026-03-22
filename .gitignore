@@ -1,5 +1,4 @@
 # Environment variables - NEVER commit these
-venv/
 .env
 .env.local
 .env.*.local
@@ -14,6 +13,7 @@ __pycache__/
 .venv/
 venv/
 env/
+backend/venv
 *.egg-info/
 dist/
 build/
