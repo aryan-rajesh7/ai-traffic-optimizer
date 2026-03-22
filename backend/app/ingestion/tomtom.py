@@ -1,6 +1,7 @@
 import httpx
 import os
 from dotenv import load_dotenv
+from supabase import create_client
 
 load_dotenv()
 
@@ -17,7 +18,7 @@ INTERSECTIONS = [
 async def fetch_traffic_data(lat: float, lon: float) -> dict:
     url = (
         f"https://api.tomtom.com/traffic/services/4/flowSegmentData/"
-        f"absolute/10/json?point={lat},{lon}&key={TOMTOM_API_KEY}"
+        f"absolute/10/json?point={lat},{lon}&key={tom_apikey}"
     )
     async with httpx.AsyncClient() as client:
         response = await client.get(url)
@@ -37,4 +38,10 @@ def calculate_congestion_score(current_speed: float, free_flow_speed: float) -> 
         return 0.0
     score = 1 - (current_speed / free_flow_speed)
     return round(max(0.0, min(1.0, score)), 2)
+
+
+def get_intersection_ids() -> dict:
+    result = supabase.table("intersections").select("id, name").execute()
+    return {row["name"]: row["id"] for row in result.data}
+
 
