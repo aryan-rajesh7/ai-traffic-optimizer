@@ -31,3 +31,36 @@ class ConnectionManager:
         for connection in self.active_connections:
             await connection.send_text(json.dumps(data))
 
+manager = ConnectionManager()
+
+def get_latest_traffic_data() -> list:
+    result = (
+        supabase.table("sensor_readings")
+        .select("*, intersections(name, latitude, longitude, city)")
+        .order("recorded_at", desc=True)
+        .limit(5)
+        .execute()
+    )
+    return result.data
+
+
+
+async def broadcast_traffic_update():
+    data = get_latest_traffic_data()
+    await manager.broadcast({
+        "type": "traffic_update",
+        "data": data
+    })
+
+async def websocket_endpoint(websocket: WebSocket):
+    await manager.connect(websocket)
+    try:
+        while True:
+            data = get_latest_traffic_data()
+            await websocket.send_text(json.dumps({
+                "type": "traffic_update",
+                "data": data
+            }))
+            await asyncio.sleep(30)
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
