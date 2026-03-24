@@ -118,3 +118,23 @@ def save_model(model, scaler):
     import pickle
     with open("ml/saved_models/scaler.pkl", "wb") as f:
         pickle.dump(scaler, f)
+
+
+
+# Graphs
+
+def plot_training_loss(train_losses, test_losses):
+    print("Generating training loss graph...")
+    os.makedirs("ml/plots", exist_ok=True)
+    plt.figure(figsize=(10, 6))
+    plt.plot(train_losses, label="Training Loss", color="blue", linewidth=2)
+    plt.plot(test_losses, label="Test Loss", color="orange", linewidth=2)
+    plt.title("LSTM Training Loss Over Time")
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss (MSE)")
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig("ml/plots/training_loss.png", dpi=150)
+    plt.close()
+    print("Saved training_loss.png")
