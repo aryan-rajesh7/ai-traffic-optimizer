@@ -184,3 +184,37 @@ def plot_prediction_vs_actual(model, X_test, y_test, scaler):
     plt.savefig("ml/plots/prediction_vs_actual.png", dpi=150)
     plt.close()
     print("Saved prediction_vs_actual.png")
+
+
+def plot_city_comparison(df):
+    print("Generating city comparison graph...")
+    os.makedirs("ml/plots", exist_ok=True)
+    city_avg = df.groupby("intersection_id")["congestion_score"].mean()
+    names = []
+    scores = []
+    for intersection_id, score in city_avg.items():
+        subset = df[df["intersection_id"] == intersection_id]
+        name = subset.iloc[0]["intersections"]["name"] if isinstance(subset.iloc[0]["intersections"], dict) else intersection_id
+        names.append(name)
+        scores.append(score)
+    colors = ["red" if s > 0.3 else "orange" if s > 0.15 else "green" for s in scores]
+    plt.figure(figsize=(12, 6))
+    bars = plt.bar(names, scores, color=colors, alpha=0.8, edgecolor="black")
+    plt.title("Average Congestion Score by Intersection")
+    plt.xlabel("Intersection")
+    plt.ylabel("Average Congestion Score")
+    plt.xticks(rotation=15, ha="right")
+    for bar, score in zip(bars, scores):
+        plt.text(
+            bar.get_x() + bar.get_width() / 2,
+            bar.get_height() + 0.005,
+            f"{score:.2f}",
+            ha="center",
+            fontsize=10
+        )
+    plt.grid(True, alpha=0.3, axis="y")
+    plt.tight_layout()
+    plt.savefig("ml/plots/city_comparison.png", dpi=150)
+    plt.close()
+    print("Saved city_comparison.png")
+    
