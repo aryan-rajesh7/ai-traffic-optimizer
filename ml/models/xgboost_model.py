@@ -48,3 +48,50 @@ def train_xgboost(df: pd.DataFrame):
     print(f"XGBoost RMSE: {rmse:.4f}")
     return model, X_test, y_test, predictions
 
+
+def plot_xgboost_feature_importance(model):
+    print("Generating XGBoost feature importance graph...")
+    os.makedirs("ml/plots", exist_ok=True)
+    importance = model.feature_importances_
+    plt.figure(figsize=(10, 6))
+    colors = ["#2196F3", "#4CAF50", "#FF9800", "#F44336", "#9C27B0"]
+    bars = plt.bar(FEATURES, importance, color=colors, alpha=0.85, edgecolor="black")
+    plt.title("XGBoost Feature Importance")
+    plt.xlabel("Feature")
+    plt.ylabel("Importance Score")
+    for bar, score in zip(bars, importance):
+        plt.text(
+            bar.get_x() + bar.get_width() / 2,
+            bar.get_height() + 0.002,
+            f"{score:.3f}",
+            ha="center",
+            fontsize=10
+        )
+    plt.grid(True, alpha=0.3, axis="y")
+    plt.tight_layout()
+    plt.savefig("ml/plots/xgboost_feature_importance.png", dpi=150)
+    plt.close()
+    print("Saved xgboost_feature_importance.png")
+
+def plot_xgboost_predictions(y_test, predictions):
+    print("Generating XGBoost prediction graph...")
+    os.makedirs("ml/plots", exist_ok=True)
+    plt.figure(figsize=(12, 6))
+    plt.plot(y_test.values[:100], label="Actual", color="blue", linewidth=2)
+    plt.plot(predictions[:100], label="Predicted", color="green",
+             linewidth=2, linestyle="--")
+    plt.title("XGBoost: Predicted vs Actual Congestion Score")
+    plt.xlabel("Time Step")
+    plt.ylabel("Congestion Score")
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig("ml/plots/xgboost_predictions.png", dpi=150)
+    plt.close()
+    print("Saved xgboost_predictions.png")
+
+def save_xgboost_model(model):
+    os.makedirs("ml/saved_models", exist_ok=True)
+    with open("ml/saved_models/xgboost_model.pkl", "wb") as f:
+        pickle.dump(model, f)
+    print("XGBoost model saved to ml/saved_models/")
