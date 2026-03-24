@@ -138,3 +138,49 @@ def plot_training_loss(train_losses, test_losses):
     plt.savefig("ml/plots/training_loss.png", dpi=150)
     plt.close()
     print("Saved training_loss.png")
+
+
+def plot_congestion_over_time(df):
+    print("Generating congestion over time graph...")
+    os.makedirs("ml/plots", exist_ok=True)
+    plt.figure(figsize=(14, 7))
+    for intersection_id in df["intersection_id"].unique():
+        subset = df[df["intersection_id"] == intersection_id]
+        name = subset.iloc[0]["intersections"]["name"] if isinstance(subset.iloc[0]["intersections"], dict) else intersection_id
+        plt.plot(
+            subset["recorded_at"],
+            subset["congestion_score"],
+            label=name,
+            linewidth=1.5,
+            alpha=0.8
+        )
+    plt.title("Congestion Score Over Time by Intersection")
+    plt.xlabel("Time")
+    plt.ylabel("Congestion Score (0=free, 1=gridlock)")
+    plt.legend(loc="upper right", fontsize=8)
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig("ml/plots/congestion_over_time.png", dpi=150)
+    plt.close()
+    print("Saved congestion_over_time.png")
+
+
+def plot_prediction_vs_actual(model, X_test, y_test, scaler):
+    print("Generating prediction vs actual graph...")
+    os.makedirs("ml/plots", exist_ok=True)
+    model.eval()
+    with torch.no_grad():
+        predictions = model(X_test).squeeze().numpy()
+    actual = y_test.numpy()
+    plt.figure(figsize=(12, 6))
+    plt.plot(actual[:100], label="Actual", color="blue", linewidth=2)
+    plt.plot(predictions[:100], label="Predicted", color="red", linewidth=2, linestyle="--")
+    plt.title("LSTM: Predicted vs Actual Congestion Score")
+    plt.xlabel("Time Step")
+    plt.ylabel("Congestion Score")
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig("ml/plots/prediction_vs_actual.png", dpi=150)
+    plt.close()
+    print("Saved prediction_vs_actual.png")
