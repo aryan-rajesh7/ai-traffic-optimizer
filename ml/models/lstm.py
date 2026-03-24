@@ -95,4 +95,26 @@ def train_lstm(df):
     train_losses = []
     test_losses = []
     epochs = 100
- 
+    for epoch in range(epochs):
+        model.train()
+        optimizer.zero_grad()
+        output = model(X_train)
+        loss = criterion(output.squeeze(), y_train)
+        loss.backward()
+        optimizer.step()
+        model.eval()
+        with torch.no_grad():
+            test_output = model(X_test)
+            test_loss = criterion(test_output.squeeze(), y_test)
+        train_losses.append(loss.item())
+        test_losses.append(test_loss.item())
+        if (epoch + 1) % 10 == 0:
+            print(f"Epoch {epoch+1}/{epochs} - Train Loss: {loss.item():.4f} - Test Loss: {test_loss.item():.4f}")
+    return model, scaler, train_losses, test_losses, X_test, y_test
+
+def save_model(model, scaler):
+    os.makedirs("ml/saved_models", exist_ok=True)
+    torch.save(model.state_dict(), "ml/saved_models/lstm_model.pt")
+    import pickle
+    with open("ml/saved_models/scaler.pkl", "wb") as f:
+        pickle.dump(scaler, f)
