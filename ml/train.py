@@ -56,5 +56,6 @@ def run_training():
     print("Model saved to ml/saved_models/")
     print("=" * 50)
 
+
 if __name__ == "__main__":
     run_training()
