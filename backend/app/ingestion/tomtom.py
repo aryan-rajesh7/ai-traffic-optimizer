@@ -1,25 +1,18 @@
 import httpx
 import os
 from dotenv import load_dotenv
-from supabase import create_client
 
 load_dotenv()
 
 TOMTOM_API_KEY = os.getenv("TOMTOM_API_KEY")
 
-supabase = create_client(
-    os.getenv("SUPABASE_URL"),
-    os.getenv("SUPABASE_SERVICE_ROLE_KEY")
-)
-
 INTERSECTIONS = [
-    {"id": None, "name": "5th Ave & Broadway", "lat": 40.7549, "lon": -73.9840},
-    {"id": None, "name": "Market St & 5th St", "lat": 37.7836, "lon": -122.4089},
-    {"id": None, "name": "Michigan Ave & Chicago Ave", "lat": 41.8966, "lon": -87.6239},
-    {"id": None, "name": "Sunset Blvd & Vine St", "lat": 34.0983, "lon": -118.3263},
-    {"id": None, "name": "Pike St & 1st Ave", "lat": 47.6086, "lon": -122.3408},
+    {"name": "5th Ave & Broadway",         "lat": 40.7549, "lon": -73.9840,  "city": "New York"},
+    {"name": "Market St & 5th St",         "lat": 37.7836, "lon": -122.4089, "city": "San Francisco"},
+    {"name": "Michigan Ave & Chicago Ave", "lat": 41.8966, "lon": -87.6239,  "city": "Chicago"},
+    {"name": "Sunset Blvd & Vine St",      "lat": 34.0983, "lon": -118.3263, "city": "Los Angeles"},
+    {"name": "Pike St & 1st Ave",          "lat": 47.6086, "lon": -122.3408, "city": "Seattle"},
 ]
-
 
 async def fetch_traffic_data(lat: float, lon: float) -> dict:
     url = (
@@ -45,38 +38,27 @@ def calculate_congestion_score(current_speed: float, free_flow_speed: float) -> 
     score = 1 - (current_speed / free_flow_speed)
     return round(max(0.0, min(1.0, score)), 2)
 
-
-def get_intersection_ids() -> dict:
-    result = supabase.table("intersections").select("id, name").execute()
-    return {row["name"]: row["id"] for row in result.data}
-
-
-async def store_sensor_reading(intersection_id: str, traffic_data: dict):
-    congestion_score = calculate_congestion_score(
-        traffic_data["current_speed"],
-        traffic_data["free_flow_speed"]
-    )
-    supabase.table("sensor_readings").insert({
-        "intersection_id": intersection_id,
-        "vehicle_count": 0,
-        "average_speed": traffic_data["current_speed"],
-        "congestion_score": congestion_score,
-        "source": "tomtom"
-    }).execute()
-
-async def ingest_all_intersections():
-    print("Getting traffic data")
-    intersection_ids = get_intersection_ids()
+async def fetch_all_intersections() -> list:
+    print("Fetching live traffic data...")
+    results = []
     for intersection in INTERSECTIONS:
-        name = intersection["name"]
-        intersection_id = intersection_ids.get(name)
-        if not intersection_id:
-            print(f"Skipping {name} - not found in database")
-            continue
         traffic_data = await fetch_traffic_data(
             intersection["lat"],
             intersection["lon"]
         )
-        await store_sensor_reading(intersection_id, traffic_data)
-        print(f"Saved data for {name} - congestion: {calculate_congestion_score(traffic_data['current_speed'], traffic_data['free_flow_speed'])}")
-    print("Done!")
+        congestion_score = calculate_congestion_score(
+            traffic_data["current_speed"],
+            traffic_data["free_flow_speed"]
+        )
+        results.append({
+            "name": intersection["name"],
+            "city": intersection["city"],
+            "lat": intersection["lat"],
+            "lon": intersection["lon"],
+            "congestion_score": congestion_score,
+            "road_closure": traffic_data["road_closure"],
+            "confidence": traffic_data["confidence"],
+        })
+        print(f"{intersection['name']} - congestion: {congestion_score}")
+    print("Done fetching all intersections!")
+    return results

@@ -1,5 +1,4 @@
 from celery import Celery
-from celery.schedules import crontab
 import asyncio
 import os
 from dotenv import load_dotenv
@@ -15,8 +14,8 @@ celery_app = Celery(
 )
 
 celery_app.conf.beat_schedule = {
-    "ingest-traffic-every-30-seconds": {
-        "task": "app.tasks.scheduler.ingest_traffic",
+    "refresh-traffic-every-30-seconds": {
+        "task": "app.tasks.scheduler.refresh_traffic",
         "schedule": 30.0,
     },
 }
@@ -24,8 +23,8 @@ celery_app.conf.beat_schedule = {
 celery_app.conf.timezone = "UTC"
 
 @celery_app.task
-def ingest_traffic():
-    from app.ingestion.tomtom import ingest_all_intersections
-    print("Running scheduled traffic extraction...")
-    asyncio.run(ingest_all_intersections())
-    print("Scheduled data extraction complete!")
+def refresh_traffic():
+    from app.ws.stream import refresh_traffic_data
+    print("Running scheduled traffic refresh...")
+    asyncio.run(refresh_traffic_data())
+    print("Scheduled refresh complete!")
