@@ -38,9 +38,8 @@ async def refresh():
 
 @app.get("/recommend/{intersection_name}")
 async def recommend(intersection_name: str):
-    if not latest_traffic_data:
-        await refresh_traffic_data()
-    recommendation = get_signal_recommendation(intersection_name, latest_traffic_data)
+    fresh_data = await fetch_all_intersections()
+    recommendation = get_signal_recommendation(intersection_name, fresh_data)
     return {
         "intersection": intersection_name,
         "recommendation": recommendation
@@ -48,9 +47,8 @@ async def recommend(intersection_name: str):
 
 @app.get("/explain/{intersection_name}")
 async def explain(intersection_name: str):
-    if not latest_traffic_data:
-        await refresh_traffic_data()
-    explanation = get_congestion_explanation(intersection_name, latest_traffic_data)
+    fresh_data = await fetch_all_intersections()
+    explanation = get_congestion_explanation(intersection_name, fresh_data)
     return {
         "intersection": intersection_name,
         "explanation": explanation
