@@ -45,6 +45,7 @@ export default function MapComponent({ traffic, onIntersectionClick }: MapProps)
     map.current.addControl(
       new maplibregl.AttributionControl({
       compact: false,
+      customAttribution: '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>'
     })
     );
 
