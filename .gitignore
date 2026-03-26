@@ -61,3 +61,7 @@ celerybeat.pid
 # Frontend env
 frontend/.env.local
 frontend/.env*.local
+
+# Backend
+backend/congestion/*.so
+backend/congestion/*.dylib
