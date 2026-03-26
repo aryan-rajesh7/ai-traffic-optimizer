@@ -38,4 +38,54 @@ export default function MapComponent({ traffic, onIntersectionClick }: MapProps)
       center: [-98.5795, 39.8283],
       zoom: 3.5,
     });
+
+    map.current.addControl(new maplibregl.NavigationControl());
+  }, []);
+
+  useEffect(() => {
+    if (!map.current || traffic.length === 0) return;
+
+    markers.current.forEach((marker) => marker.remove());
+    markers.current = [];
+
+    traffic.forEach((intersection) => {
+      const color = getCongestionColor(intersection.congestion_score);
+      const label = getCongestionLabel(intersection.congestion_score);
+
+      const el = document.createElement("div");
+      el.style.width = "20px";
+      el.style.height = "20px";
+      el.style.borderRadius = "50%";
+      el.style.backgroundColor = color;
+      el.style.border = "3px solid white";
+      el.style.boxShadow = "0 2px 8px rgba(0,0,0,0.3)";
+      el.style.cursor = "pointer";
+
+      const popup = new maplibregl.Popup({ offset: 25 }).setHTML(`
+        <div style="font-family: sans-serif; padding: 4px;">
+          <strong>${intersection.name}</strong><br/>
+          ${intersection.city}<br/>
+          Congestion: <span style="color: ${color}; font-weight: bold;">${label} (${intersection.congestion_score})</span>
+        </div>
+      `);
+
+      const marker = new maplibregl.Marker({ element: el })
+        .setLngLat([intersection.lon, intersection.lat])
+        .setPopup(popup)
+        .addTo(map.current!);
+
+      el.addEventListener("click", () => {
+        onIntersectionClick(intersection);
+      });
+
+      markers.current.push(marker);
+    });
+  }, [traffic, onIntersectionClick]);
+
+  return (
+    <div
+      ref={mapContainer}
+      style={{ width: "100%", height: "100%" }}
+    />
+  );
 }
