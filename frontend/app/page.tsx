@@ -23,7 +23,7 @@ const Map = dynamic(() => import("./components/Map"), {
 });
 
 export default function Home() {
-  const { traffic, loading, error } = useTrafficData();
+  const { traffic, loading, error, lastUpdated, refreshing, refetch } = useTrafficData();
   const [selectedIntersection, setSelectedIntersection] = useState<Intersection | null>(null);
 
   const handleIntersectionClick = (intersection: Intersection) => {
