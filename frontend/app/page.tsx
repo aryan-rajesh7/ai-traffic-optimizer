@@ -1,65 +1,90 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import dynamic from "next/dynamic";
+import { useTrafficData, Intersection } from "./hooks/useTrafficData";
+import Sidebar from "./components/Sidebar";
+
+const Map = dynamic(() => import("./components/Map"), {
+  ssr: false,
+  loading: () => (
+    <div style={{
+      flex: 1,
+      background: "#0f0f1a",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      color: "white",
+      fontSize: "14px"
+    }}>
+      Loading map...
+    </div>
+  ),
+});
 
 export default function Home() {
+  const { traffic, loading, error } = useTrafficData();
+  const [selectedIntersection, setSelectedIntersection] = useState<Intersection | null>(null);
+
+  const handleIntersectionClick = (intersection: Intersection) => {
+    setSelectedIntersection(intersection);
+  };
+
+  if (error) {
+    return (
+      <div style={{
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#0f0f1a",
+        color: "white",
+        flexDirection: "column",
+        gap: "12px"
+      }}>
+        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+          Cannot connect to backend
+        </p>
+        <p style={{ fontSize: "14px", color: "#888" }}>
+          Make sure your FastAPI server is running on localhost:8000
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main style={{
+      display: "flex",
+      height: "100vh",
+      width: "100vw",
+      overflow: "hidden",
+      background: "#0f0f1a"
+    }}>
+      <div style={{ flex: 1, position: "relative" }}>
+        <Map
+          traffic={traffic}
+          onIntersectionClick={handleIntersectionClick}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+        <div style={{
+          position: "absolute",
+          top: "12px",
+          left: "12px",
+          background: "rgba(0,0,0,0.7)",
+          color: "white",
+          padding: "8px 12px",
+          borderRadius: "8px",
+          fontSize: "12px",
+          backdropFilter: "blur(4px)"
+        }}>
+          {loading ? "Loading..." : `${traffic.length} intersections live`}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </div>
+      <Sidebar
+        traffic={traffic}
+        loading={loading}
+        selectedIntersection={selectedIntersection}
+        onIntersectionClick={handleIntersectionClick}
+      />
+    </main>
   );
 }
