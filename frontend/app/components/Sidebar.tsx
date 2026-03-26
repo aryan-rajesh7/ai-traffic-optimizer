@@ -15,7 +15,10 @@ function stripMarkdown(text: string): string {
 interface SidebarProps {
   traffic: Intersection[];
   loading: boolean;
+  refreshing: boolean;
+  lastUpdated: Date | null;
   onIntersectionClick: (intersection: Intersection) => void;
+  onRefresh: () => void;
 }
 
 function getCongestionColor(score: number): string {
@@ -35,7 +38,10 @@ function getCongestionLabel(score: number): string {
 export default function Sidebar({
   traffic,
   loading,
+  refreshing,
+  lastUpdated,
   onIntersectionClick,
+  onRefresh,
 }: SidebarProps) {
   const [recommendation, setRecommendation] = useState<string | null>(null);
   const [explanation, setExplanation] = useState<string | null>(null);
@@ -97,14 +103,33 @@ export default function Sidebar({
       gap: "12px"
     }}>
       <div style={{ borderBottom: "1px solid #333", paddingBottom: "12px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h1 style={{ fontSize: "18px", fontWeight: "bold", margin: 0 }}>
           AI Traffic Optimizer
         </h1>
-        <p style={{ fontSize: "12px", color: "#888", margin: "4px 0 0" }}>
-          Live data updates every 30 seconds
-        </p>
+        <button
+          onClick={onRefresh}
+          disabled={refreshing}
+          style={{
+            background: refreshing ? "#333" : "#533483",
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            padding: "4px 10px",
+            fontSize: "11px",
+            cursor: refreshing ? "not-allowed" : "pointer",
+            fontWeight: "bold"
+          }}
+        >
+          {refreshing ? "Refreshing..." : "Refresh"}
+        </button>
       </div>
-
+      <p style={{ fontSize: "11px", color: "#888", margin: "4px 0 0" }}>
+        {lastUpdated
+          ? `Last updated: ${lastUpdated.toLocaleTimeString()}`
+          : "Loading live traffic data..."}
+      </p>
+    </div>
       {traffic.map((intersection) => {
         const color = getCongestionColor(intersection.congestion_score);
         const label = getCongestionLabel(intersection.congestion_score);

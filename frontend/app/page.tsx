@@ -82,7 +82,10 @@ export default function Home() {
       <Sidebar
         traffic={traffic}
         loading={loading}
+        refreshing={refreshing}
+        lastUpdated={lastUpdated}
         onIntersectionClick={handleIntersectionClick}
+        onRefresh={refetch}
       />
     </main>
   );

@@ -14,8 +14,11 @@ export function useTrafficData() {
   const [traffic, setTraffic] = useState<Intersection[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const fetchTraffic = useCallback(async () => {
+  const fetchTraffic = useCallback(async (manual = false) => {
+    if (manual) setRefreshing(true);
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/traffic`
@@ -23,33 +26,30 @@ export function useTrafficData() {
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
       setTraffic(data.traffic ?? []);
+      setLastUpdated(new Date());
       setError(null);
-    } 
-    catch (err) {
+    } catch (err) {
       setError("Failed to fetch traffic data");
     } finally {
       setLoading(false);
+      if (manual) setRefreshing(false);
     }
   }, []);
 
   useEffect(() => {
     let cancelled = false;
-
     const load = async () => {
       await fetchTraffic();
     };
-
     load();
-
     const interval = setInterval(() => {
       if (!cancelled) fetchTraffic();
     }, 30000);
-
     return () => {
       cancelled = true;
       clearInterval(interval);
     };
   }, [fetchTraffic]);
 
-  return { traffic, loading, error, refetch: fetchTraffic };
+  return { traffic, loading, error, lastUpdated, refreshing, refetch: () => fetchTraffic(true) };
 }
