@@ -197,14 +197,14 @@ export default function Sidebar({
                 </p>
                 <p style={{ margin: 0, color: "#ddd" }}>{stripMarkdown(recommendation)}</p>
 
-                {explanation && (
-                  <>
-                    <p style={{ margin: 0, color: "#ddd" }}>{stripMarkdown(explanation)}</p>
-                      Congestion Explanation
-                    </p>
-                    <p style={{ margin: 0, color: "#ddd" }}>{explanation}</p>
-                  </>
-                )}
+               {explanation && (
+                    <>
+                      <p style={{ color: "#60a5fa", fontWeight: "bold", margin: "10px 0 6px" }}>
+                        Congestion Explanation
+                      </p>
+                      <p style={{ margin: 0, color: "#ddd" }}>{stripMarkdown(explanation)}</p>
+                    </>
+                  )}
               </div>
             )}
           </div>

@@ -24,11 +24,13 @@ function getCongestionLabel(score: number): string {
   return "Severe";
 }
 
+
 export default function MapComponent({ traffic, onIntersectionClick }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const markers = useRef<maplibregl.Marker[]>([]);
 
+  
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
 
@@ -40,7 +42,14 @@ export default function MapComponent({ traffic, onIntersectionClick }: MapProps)
     });
 
     map.current.addControl(new maplibregl.NavigationControl());
+    map.current.addControl(
+      new maplibregl.AttributionControl({
+      compact: false,
+    })
+    );
+
   }, []);
+  
 
   useEffect(() => {
     if (!map.current || traffic.length === 0) return;
