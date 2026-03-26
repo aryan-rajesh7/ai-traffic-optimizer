@@ -57,3 +57,7 @@ celerybeat-schedule.bak
 celerybeat-schedule.dir
 celerybeat-schedule.dat
 celerybeat.pid
+
+# Frontend env
+frontend/.env.local
+frontend/.env*.local
