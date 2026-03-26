@@ -3,10 +3,18 @@
 import { useState } from "react";
 import { Intersection } from "../hooks/useTrafficData";
 
+function stripMarkdown(text: string): string {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/\*(.*?)\*/g, "$1")
+    .replace(/#{1,6}\s/g, "")
+    .replace(/\n\n/g, "\n")
+    .trim();
+}
+
 interface SidebarProps {
   traffic: Intersection[];
   loading: boolean;
-  selectedIntersection: Intersection | null;
   onIntersectionClick: (intersection: Intersection) => void;
 }
 
@@ -27,7 +35,6 @@ function getCongestionLabel(score: number): string {
 export default function Sidebar({
   traffic,
   loading,
-  selectedIntersection,
   onIntersectionClick,
 }: SidebarProps) {
   const [recommendation, setRecommendation] = useState<string | null>(null);
@@ -188,11 +195,11 @@ export default function Sidebar({
                 <p style={{ color: "#a78bfa", fontWeight: "bold", margin: "0 0 6px" }}>
                   AI Recommendation
                 </p>
-                <p style={{ margin: 0, color: "#ddd" }}>{recommendation}</p>
+                <p style={{ margin: 0, color: "#ddd" }}>{stripMarkdown(recommendation)}</p>
 
                 {explanation && (
                   <>
-                    <p style={{ color: "#60a5fa", fontWeight: "bold", margin: "10px 0 6px" }}>
+                    <p style={{ margin: 0, color: "#ddd" }}>{stripMarkdown(explanation)}</p>
                       Congestion Explanation
                     </p>
                     <p style={{ margin: 0, color: "#ddd" }}>{explanation}</p>

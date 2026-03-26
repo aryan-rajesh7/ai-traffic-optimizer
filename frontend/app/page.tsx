@@ -82,7 +82,6 @@ export default function Home() {
       <Sidebar
         traffic={traffic}
         loading={loading}
-        selectedIntersection={selectedIntersection}
         onIntersectionClick={handleIntersectionClick}
       />
     </main>
