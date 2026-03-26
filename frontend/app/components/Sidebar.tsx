@@ -34,3 +34,175 @@ export default function Sidebar({
   const [explanation, setExplanation] = useState<string | null>(null);
   const [recLoading, setRecLoading] = useState(false);
   const [activeIntersection, setActiveIntersection] = useState<string | null>(null);
+
+  const getRecommendation = async (intersection: Intersection) => {
+    setRecLoading(true);
+    setActiveIntersection(intersection.name);
+    setRecommendation(null);
+    setExplanation(null);
+
+    try {
+      const encodedName = encodeURIComponent(intersection.name);
+
+      const [recRes, expRes] = await Promise.all([
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/recommend/${encodedName}`),
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/explain/${encodedName}`),
+      ]);
+
+      const recData = await recRes.json();
+      const expData = await expRes.json();
+
+      setRecommendation(recData.recommendation);
+      setExplanation(expData.explanation);
+    } catch (err) {
+      setRecommendation("Failed to get recommendation. Please try again.");
+    } finally {
+      setRecLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div style={{
+        width: "380px",
+        background: "#1a1a2e",
+        color: "white",
+        padding: "20px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: "14px"
+      }}>
+        Loading live traffic data...
+      </div>
+    );
+  }
+
+  return (
+    <div style={{
+      width: "380px",
+      background: "#1a1a2e",
+      color: "white",
+      padding: "16px",
+      overflowY: "auto",
+      display: "flex",
+      flexDirection: "column",
+      gap: "12px"
+    }}>
+      <div style={{ borderBottom: "1px solid #333", paddingBottom: "12px" }}>
+        <h1 style={{ fontSize: "18px", fontWeight: "bold", margin: 0 }}>
+          AI Traffic Optimizer
+        </h1>
+        <p style={{ fontSize: "12px", color: "#888", margin: "4px 0 0" }}>
+          Live data updates every 30 seconds
+        </p>
+      </div>
+
+      {traffic.map((intersection) => {
+        const color = getCongestionColor(intersection.congestion_score);
+        const label = getCongestionLabel(intersection.congestion_score);
+        const isActive = activeIntersection === intersection.name;
+
+        return (
+          <div
+            key={intersection.name}
+            style={{
+              background: isActive ? "#16213e" : "#0f3460",
+              borderRadius: "8px",
+              padding: "12px",
+              border: isActive ? `2px solid ${color}` : "2px solid transparent",
+              cursor: "pointer",
+            }}
+            onClick={() => onIntersectionClick(intersection)}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <p style={{ fontWeight: "bold", margin: 0, fontSize: "14px" }}>
+                  {intersection.name}
+                </p>
+                <p style={{ color: "#888", margin: "2px 0 0", fontSize: "12px" }}>
+                  {intersection.city}
+                </p>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{
+                  background: color,
+                  color: "white",
+                  padding: "2px 8px",
+                  borderRadius: "12px",
+                  fontSize: "11px",
+                  fontWeight: "bold"
+                }}>
+                  {label}
+                </div>
+                <p style={{ color, fontWeight: "bold", margin: "4px 0 0", fontSize: "16px" }}>
+                  {intersection.congestion_score.toFixed(2)}
+                </p>
+              </div>
+            </div>
+
+            {intersection.road_closure && (
+              <div style={{
+                background: "#ef4444",
+                color: "white",
+                padding: "2px 8px",
+                borderRadius: "4px",
+                fontSize: "11px",
+                marginTop: "8px",
+                display: "inline-block"
+              }}>
+                ROAD CLOSURE
+              </div>
+            )}
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                getRecommendation(intersection);
+              }}
+              style={{
+                marginTop: "8px",
+                width: "100%",
+                padding: "6px",
+                background: "#533483",
+                color: "white",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+                fontSize: "12px",
+                fontWeight: "bold"
+              }}
+            >
+              {recLoading && isActive ? "Getting AI Recommendation..." : "Get AI Recommendation"}
+            </button>
+
+            {isActive && recommendation && (
+              <div style={{
+                marginTop: "10px",
+                background: "#0d0d1a",
+                borderRadius: "6px",
+                padding: "10px",
+                fontSize: "12px",
+                lineHeight: "1.6"
+              }}>
+                <p style={{ color: "#a78bfa", fontWeight: "bold", margin: "0 0 6px" }}>
+                  AI Recommendation
+                </p>
+                <p style={{ margin: 0, color: "#ddd" }}>{recommendation}</p>
+
+                {explanation && (
+                  <>
+                    <p style={{ color: "#60a5fa", fontWeight: "bold", margin: "10px 0 6px" }}>
+                      Congestion Explanation
+                    </p>
+                    <p style={{ margin: 0, color: "#ddd" }}>{explanation}</p>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
