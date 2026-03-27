@@ -5,9 +5,7 @@ import dynamic from "next/dynamic";
 import { useTrafficData, Intersection } from "./hooks/useTrafficData";
 import Sidebar from "./components/Sidebar";
 import Legend from "./components/Legend";
-import StatsBar from "./components/Legend";
-
-
+import StatsBar from "./components/StatsBar";
 
 const Map = dynamic(() => import("./components/Map"), {
   ssr: false,
@@ -29,9 +27,9 @@ const Map = dynamic(() => import("./components/Map"), {
 export default function Home() {
   const { traffic, loading, error, lastUpdated, refreshing, refetch } = useTrafficData();
 
-const handleIntersectionClick = (intersection: Intersection) => {
-  console.log("Clicked:", intersection.name);
-};
+  const handleIntersectionClick = (intersection: Intersection) => {
+    console.log("Clicked:", intersection.name);
+  };
 
   if (error) {
     return (
@@ -81,27 +79,8 @@ const handleIntersectionClick = (intersection: Intersection) => {
         }}>
           {loading ? "Loading..." : `${traffic.length} intersections live`}
         </div>
-        <div style={{ flex: 1, position: "relative" }}>
-        <Map
-          traffic={traffic}
-          onIntersectionClick={handleIntersectionClick}
-        />
-        <div style={{
-          position: "absolute",
-          top: "12px",
-          left: "12px",
-          background: "rgba(0,0,0,0.7)",
-          color: "white",
-          padding: "8px 12px",
-          borderRadius: "8px",
-          fontSize: "12px",
-          backdropFilter: "blur(4px)"
-        }}>
-          {loading ? "Loading..." : `${traffic.length} intersections live`}
-        </div>
         <StatsBar traffic={traffic} />
         <Legend />
-      </div>
       </div>
       <Sidebar
         traffic={traffic}
