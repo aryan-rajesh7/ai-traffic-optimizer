@@ -100,21 +100,43 @@ export default function Sidebar({
 };
 
   if (loading) {
-    return (
-      <div style={{
-        width: "380px",
-        background: "#1a1a2e",
-        color: "white",
-        padding: "20px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: "14px"
-      }}>
-        Loading live traffic data...
+  return (
+    <div style={{
+      width: "380px",
+      background: "#1a1a2e",
+      color: "white",
+      padding: "16px",
+      display: "flex",
+      flexDirection: "column",
+      gap: "12px"
+    }}>
+      <div style={{ borderBottom: "1px solid #333", paddingBottom: "12px" }}>
+        <div style={{
+          height: "20px",
+          width: "60%",
+          background: "#0f3460",
+          borderRadius: "4px",
+          marginBottom: "8px"
+        }} />
+        <div style={{
+          height: "12px",
+          width: "40%",
+          background: "#0f3460",
+          borderRadius: "4px"
+        }} />
       </div>
-    );
-  }
+      {[1, 2, 3, 4, 5].map((i) => (
+        <div key={i} style={{
+          background: "#0f3460",
+          borderRadius: "8px",
+          padding: "12px",
+          height: "80px",
+          opacity: 1 - i * 0.15
+        }} />
+      ))}
+    </div>
+  );
+}
 
   return (
     <div style={{
