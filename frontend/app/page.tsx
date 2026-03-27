@@ -8,6 +8,7 @@ import Legend from "./components/Legend";
 import StatsBar from "./components/Legend";
 
 
+
 const Map = dynamic(() => import("./components/Map"), {
   ssr: false,
   loading: () => (
@@ -27,11 +28,10 @@ const Map = dynamic(() => import("./components/Map"), {
 
 export default function Home() {
   const { traffic, loading, error, lastUpdated, refreshing, refetch } = useTrafficData();
-  const [selectedIntersection, setSelectedIntersection] = useState<Intersection | null>(null);
 
-  const handleIntersectionClick = (intersection: Intersection) => {
-    setSelectedIntersection(intersection);
-  };
+const handleIntersectionClick = (intersection: Intersection) => {
+  console.log("Clicked:", intersection.name);
+};
 
   if (error) {
     return (

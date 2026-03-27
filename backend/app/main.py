@@ -57,3 +57,37 @@ async def explain(intersection_name: str):
 @app.websocket("/ws/traffic")
 async def traffic_websocket(websocket: WebSocket):
     await websocket_endpoint(websocket)
+
+@app.get("/traffic/custom")
+async def custom_traffic(lat: float, lon: float, name: str):
+    from app.ingestion.tomtom import fetch_traffic_data, calculate_congestion_score
+    traffic_data = await fetch_traffic_data(lat, lon)
+    congestion_score = calculate_congestion_score(
+        traffic_data["current_speed"],
+        traffic_data["free_flow_speed"]
+    )
+    if congestion_score < 0.3:
+        level = "LOW"
+    elif congestion_score < 0.6:
+        level = "MODERATE"
+    elif congestion_score < 0.8:
+        level = "HIGH"
+    else:
+        level = "SEVERE"
+    fresh_data = [{
+        "name": name,
+        "city": "Custom",
+        "lat": lat,
+        "lon": lon,
+        "congestion_score": congestion_score,
+        "road_closure": traffic_data["road_closure"],
+        "confidence": traffic_data["confidence"]
+    }]
+    recommendation = get_signal_recommendation(name, fresh_data)
+    return {
+        "name": name,
+        "congestion_score": congestion_score,
+        "level": level,
+        "road_closure": traffic_data["road_closure"],
+        "recommendation": recommendation
+    }

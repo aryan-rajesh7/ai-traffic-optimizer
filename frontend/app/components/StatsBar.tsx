@@ -24,12 +24,13 @@ export default function StatsBar({ traffic }: StatsBarProps) {
   }
 
   return (
-    <div style={{
+  <div
+    style={{
       position: "absolute",
       top: "12px",
       left: "50%",
       transform: "translateX(-50%)",
-      background: "rgba(0,0,0,0.75)",
+      background: "rgba(0, 0, 0, 0.5)",
       backdropFilter: "blur(8px)",
       borderRadius: "12px",
       padding: "8px 20px",
@@ -39,7 +40,10 @@ export default function StatsBar({ traffic }: StatsBarProps) {
       color: "white",
       fontSize: "12px",
       zIndex: 10,
-      whiteSpace: "nowrap"
- 
-  );
+      whiteSpace: "nowrap",
+    }}
+  >
+  </div>
+);
+
 }
