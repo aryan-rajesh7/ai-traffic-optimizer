@@ -1,0 +1,61 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-build-frontend:
+    name: Lint and Build Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Lint
+        run: |
+          cd frontend
+          npm run lint
+
+      - name: Build
+        run: |
+          cd frontend
+          npm run build
+        env:
+          NEXT_PUBLIC_BACKEND_URL: http://localhost:8000
+          NEXT_PUBLIC_WS_URL: ws://localhost:8000
+
+  lint-backend:
+    name: Lint Backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          pip install flake8
+
+      - name: Lint
+        run: |
+          cd backend
+          flake8 app/ --max-line-length=120 --ignore=E501,W503 || true
