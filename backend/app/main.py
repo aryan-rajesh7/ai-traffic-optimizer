@@ -126,3 +126,45 @@ async def custom_traffic(request: Request, lat: float, lon: float, name: str):
         "road_closure": traffic_data["road_closure"],
         "recommendation": recommendation
     }
+
+@app.get("/ml/predict/{intersection_name}")
+async def ml_predict(intersection_name: str):
+    import pickle
+    import numpy as np
+    import torch
+    import sys
+    import os
+
+    sys.path.append(os.path.join(os.path.dirname(__file__), '../../ml'))
+
+    try:
+        fresh_data = await fetch_all_intersections()
+        intersection = next(
+            (i for i in fresh_data if i["name"].lower() == intersection_name.lower()),
+            None
+        )
+        if not intersection:
+            return {"error": "Intersection not found"}
+
+        congestion = intersection["congestion_score"]
+        hour = __import__('datetime').datetime.now().hour
+        day = __import__('datetime').datetime.now().weekday()
+
+        xgb_path = "ml/saved_models/xgboost_model.pkl"
+        if os.path.exists(xgb_path):
+            with open(xgb_path, "rb") as f:
+                xgb_model = pickle.load(f)
+            features = np.array([[hour, day, congestion, congestion, congestion]])
+            prediction = float(xgb_model.predict(features)[0])
+        else:
+            prediction = congestion
+
+        return {
+            "intersection": intersection_name,
+            "current_congestion": congestion,
+            "predicted_congestion": round(prediction, 2),
+            "model": "xgboost",
+            "hour": hour,
+        }
+    except Exception as e:
+        return {"error": str(e), "current_congestion": 0.0}
