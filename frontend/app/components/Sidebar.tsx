@@ -47,6 +47,12 @@ export default function Sidebar({
   const [explanation, setExplanation] = useState<string | null>(null);
   const [recLoading, setRecLoading] = useState(false);
   const [activeIntersection, setActiveIntersection] = useState<string | null>(null);
+  const [customLat, setCustomLat] = useState("");
+  const [customLon, setCustomLon] = useState("");
+  const [customName, setCustomName] = useState("");
+  const [customResult, setCustomResult] = useState<string | null>(null);
+  const [customLoading, setCustomLoading] = useState(false);
+    
 
   const getRecommendation = async (intersection: Intersection) => {
     setRecLoading(true);
@@ -73,6 +79,25 @@ export default function Sidebar({
       setRecLoading(false);
     }
   };
+
+  const checkCustomLocation = async () => {
+  if (!customLat || !customLon || !customName) return;
+  setCustomLoading(true);
+  setCustomResult(null);
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/traffic/custom?lat=${customLat}&lon=${customLon}&name=${encodeURIComponent(customName)}`
+    );
+    const data = await res.json();
+    setCustomResult(
+      `Congestion: ${data.congestion_score} (${data.level})\n${stripMarkdown(data.recommendation)}`
+    );
+  } catch {
+    setCustomResult("Failed to fetch data for this location.");
+  } finally {
+    setCustomLoading(false);
+  }
+};
 
   if (loading) {
     return (
@@ -129,6 +154,94 @@ export default function Sidebar({
           ? `Last updated: ${lastUpdated.toLocaleTimeString()}`
           : "Loading live traffic data..."}
       </p>
+    </div>
+    <div style={{
+  background: "#0f3460",
+  borderRadius: "8px",
+  padding: "12px",
+}}>
+  <p style={{ fontWeight: "bold", fontSize: "13px", margin: "0 0 8px" }}>
+    Check Custom Location
+  </p>
+  <input
+    type="text"
+    placeholder="Location name e.g. Times Square"
+    value={customName}
+    onChange={(e) => setCustomName(e.target.value)}
+    style={{
+      width: "100%",
+      padding: "6px",
+      borderRadius: "4px",
+      border: "1px solid #333",
+      background: "#1a1a2e",
+      color: "white",
+      fontSize: "12px",
+      marginBottom: "6px"
+    }}
+  />
+  <div style={{ display: "flex", gap: "6px", marginBottom: "6px" }}>
+    <input
+      type="text"
+      placeholder="Latitude e.g. 40.7580"
+      value={customLat}
+      onChange={(e) => setCustomLat(e.target.value)}
+      style={{
+        flex: 1,
+        padding: "6px",
+        borderRadius: "4px",
+        border: "1px solid #333",
+        background: "#1a1a2e",
+        color: "white",
+        fontSize: "12px"
+      }}
+    />
+    <input
+      type="text"
+      placeholder="Longitude e.g. -73.9855"
+      value={customLon}
+      onChange={(e) => setCustomLon(e.target.value)}
+      style={{
+        flex: 1,
+        padding: "6px",
+        borderRadius: "4px",
+        border: "1px solid #333",
+        background: "#1a1a2e",
+        color: "white",
+        fontSize: "12px"
+      }}
+    />
+    </div>
+      <button
+        onClick={checkCustomLocation}
+        disabled={customLoading || !customLat || !customLon || !customName}
+        style={{
+          width: "100%",
+          padding: "6px",
+          background: customLoading ? "#333" : "#533483",
+          color: "white",
+          border: "none",
+          borderRadius: "6px",
+          cursor: customLoading ? "not-allowed" : "pointer",
+          fontSize: "12px",
+          fontWeight: "bold"
+        }}
+      >
+        {customLoading ? "Checking..." : "Check Traffic"}
+      </button>
+      {customResult && (
+        <div style={{
+          marginTop: "8px",
+          background: "#0d0d1a",
+          borderRadius: "6px",
+          padding: "8px",
+          fontSize: "12px",
+          color: "#ddd",
+          lineHeight: "1.6",
+          whiteSpace: "pre-wrap"
+        }}>
+          {customResult}
+        </div>
+      )}
     </div>
       {traffic.map((intersection) => {
         const color = getCongestionColor(intersection.congestion_score);
