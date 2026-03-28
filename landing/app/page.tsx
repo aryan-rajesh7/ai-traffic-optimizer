@@ -5,7 +5,6 @@ import { useState } from "react";
 const LIVE_DEMO_URL = "https://ai-traffic-optimizer.vercel.app/";
 const GITHUB_URL = "https://github.com/aryan-rajesh7/ai-traffic-optimizer";
 const HF_URL = "https://aryan-rajesh7-ai-traffic-optimizer.hf.space";
-const LOCAL_LLM_URL = "https://github.com/aryan-rajesh7/nexus-lex3d";
 
 export default function LandingPage() {
   const [hoveredFeature, setHoveredFeature] = useState<number | null>(null);
@@ -311,18 +310,6 @@ export default function LandingPage() {
             border: "1px solid #ff9a00"
           }}>
             Hugging Face API →
-          </a>
-          <a href={LOCAL_LLM_URL} target="_blank" rel="noopener noreferrer" style={{
-            background: "transparent",
-            color: "#22c55e",
-            padding: "14px 32px",
-            borderRadius: "8px",
-            textDecoration: "none",
-            fontSize: "16px",
-            fontWeight: "bold",
-            border: "1px solid #22c55e"
-          }}>
-            My Local LLM Project →
           </a>
         </div>
       </section>
