@@ -17,19 +17,26 @@ export function useTrafficData() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
+  let retryDelay = 10000;
+
   const fetchTraffic = useCallback(async (manual = false) => {
     if (manual) setRefreshing(true);
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/traffic`
-      );
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/traffic`);
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
       setTraffic(data.traffic ?? []);
       setLastUpdated(new Date());
       setError(null);
+
+      retryDelay = 10000;
     } catch (err) {
-      setError("Failed to fetch traffic data");
+      setError("Backend waking up... Please wait 1-2 minutes");
+      retryDelay = Math.min(retryDelay * 1.5, 60000); // max 60s
+
+      if (document.visibilityState === "visible") {
+        setTimeout(() => fetchTraffic(), retryDelay);
+      }
     } finally {
       setLoading(false);
       if (manual) setRefreshing(false);
@@ -51,5 +58,12 @@ export function useTrafficData() {
     };
   }, [fetchTraffic]);
 
-  return { traffic, loading, error, lastUpdated, refreshing, refetch: () => fetchTraffic(true) };
+  return {
+    traffic,
+    loading,
+    error,
+    lastUpdated,
+    refreshing,
+    refetch: () => fetchTraffic(true),
+  };
 }
