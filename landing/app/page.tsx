@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const LIVE_DEMO_URL = "https://your-frontend.vercel.app";
+const LIVE_DEMO_URL = "https://ai-traffic-optimizer.vercel.app/";
 const GITHUB_URL = "https://github.com/aryan-rajesh7/ai-traffic-optimizer";
 const HF_URL = "https://aryan-rajesh7-ai-traffic-optimizer.hf.space";
 const LOCAL_LLM_URL = "https://github.com/aryan-rajesh7/nexus-lex3d";
