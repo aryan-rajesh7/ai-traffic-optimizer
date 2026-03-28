@@ -187,7 +187,7 @@ export default function LandingPage() {
                 cursor: "default"
               }}
             >
-              <div style={{ fontSize: "32px", marginBottom: "12px" }}>{feature.icon}</div>
+              <div style={{ fontSize: "32px", marginBottom: "12px" }}></div>
               <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "8px" }}>{feature.title}</h3>
               <p style={{ color: "#888", fontSize: "14px", lineHeight: "1.6" }}>{feature.description}</p>
             </div>
