@@ -1,5 +1,4 @@
 from fastapi import FastAPI, WebSocket
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -34,15 +33,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.add_middleware(
-    TrustedHostMiddleware,
-    allowed_hosts=[
-        "localhost",
-        "127.0.0.1",
-        "*.vercel.app",
-        "ai-traffic-optimizer.vercel.app"
-    ]
-)
 
 @app.middleware("http")
 async def add_security_headers(request: Request, call_next):
