@@ -95,7 +95,7 @@ export default function MapComponent({ traffic, onIntersectionClick }: MapProps)
   return (
   <div
     ref={mapContainer}
-    style={{ width: "100%", height: "100vh" }}
+    style={{ width: "100%", height: "100vh", pointerEvents: "all" }}
   />
 );
 }

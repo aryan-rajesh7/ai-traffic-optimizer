@@ -138,26 +138,6 @@ export default function LandingPage() {
             GitHub →
           </a>
         </div>
-
-        <div style={{
-          display: "flex",
-          gap: "32px",
-          marginTop: "60px",
-          flexWrap: "wrap",
-          justifyContent: "center"
-        }}>
-          {[
-            { label: "ML Models", value: "2" },
-            { label: "Cities", value: "5" },
-            { label: "Languages", value: "4" },
-            { label: "Live APIs", value: "2" },
-          ].map((stat) => (
-            <div key={stat.label} style={{ textAlign: "center" }}>
-              <p style={{ fontSize: "36px", fontWeight: "800", color: "#a78bfa" }}>{stat.value}</p>
-              <p style={{ fontSize: "13px", color: "#888" }}>{stat.label}</p>
-            </div>
-          ))}
-        </div>
       </section>
 
       {/* Features */}

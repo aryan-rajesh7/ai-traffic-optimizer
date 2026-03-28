@@ -70,27 +70,29 @@ export default function Home() {
       overflow: "hidden",
       background: "#0f0f1a"
     }}>
-      <div style={{ flex: 1, position: "relative" }}>
-        <Map
-          traffic={traffic}
-          onIntersectionClick={handleIntersectionClick}
-        />
-        <div style={{
-          position: "absolute",
-          top: "12px",
-          left: "12px",
-          background: "rgba(0,0,0,0.7)",
-          color: "white",
-          padding: "8px 12px",
-          borderRadius: "8px",
-          fontSize: "12px",
-          backdropFilter: "blur(4px)"
-        }}>
-          {loading ? "Loading..." : `${traffic.length} intersections live`}
-        </div>
-        <StatsBar traffic={traffic} />
-        <Legend />
+      <div style={{ flex: 1, position: "relative", pointerEvents: "none" }}>
+      <Map
+        traffic={traffic}
+        onIntersectionClick={handleIntersectionClick}
+      />
+      <div style={{
+        position: "absolute",
+        top: "12px",
+        left: "12px",
+        background: "rgba(0,0,0,0.7)",
+        color: "white",
+        padding: "8px 12px",
+        borderRadius: "8px",
+        fontSize: "12px",
+        backdropFilter: "blur(4px)",
+        pointerEvents: "auto",
+        zIndex: 10
+      }}>
+        {loading ? "Loading..." : `${traffic.length} intersections live`}
       </div>
+      <StatsBar traffic={traffic} />
+      <Legend />
+    </div>
       <Sidebar
         traffic={traffic}
         loading={loading}
