@@ -32,26 +32,26 @@ export default function Home() {
   };
 
   if (error) {
-    return (
-      <div style={{
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#0f0f1a",
-        color: "white",
-        flexDirection: "column",
-        gap: "12px"
-      }}>
-        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-          Cannot connect to backend
-        </p>
-        <p style={{ fontSize: "14px", color: "#888" }}>
-          Make sure your FastAPI server is running on localhost:8000
-        </p>
-      </div>
-    );
-  }
+  return (
+    <div style={{
+      height: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "#0f0f1a",
+      color: "white",
+      flexDirection: "column",
+      gap: "12px"
+    }}>
+      <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+        Loading backend — please wait a few minutes
+      </p>
+      <p style={{ fontSize: "14px", color: "#888", textAlign: "center", maxWidth: "400px" }}>
+        The backend is waking up on Hugging Face Spaces. This takes 1-2 minutes on first load. Please refresh the page shortly.
+      </p>
+    </div>
+  );
+}
 
   return (
     <main style={{
