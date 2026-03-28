@@ -5,9 +5,8 @@ WORKDIR /code
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY backend/app ./app
-COPY ml ./ml
-COPY app.py .
+COPY backend/app /code/app
+COPY ml /code/ml
 
 EXPOSE 7860
 
