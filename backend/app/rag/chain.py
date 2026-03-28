@@ -4,7 +4,11 @@ from google import genai
 
 load_dotenv()
 
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    raise ValueError("GEMINI_API_KEY environment variable is not set")
+
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 def build_context_from_memory(intersection_name: str, traffic_data: list) -> str:
     print(f"Looking for: '{intersection_name}'")
