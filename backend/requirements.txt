@@ -11,3 +11,4 @@ pandas
 onnxruntime
 celery
 redis
+slowapi

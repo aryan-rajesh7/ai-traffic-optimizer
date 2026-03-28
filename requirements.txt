@@ -2,7 +2,6 @@ fastapi
 uvicorn
 celery
 redis
-supabase
 langchain
 langchain-google-genai
 google-generativeai
@@ -14,6 +13,6 @@ xgboost
 scikit-learn
 pandas
 numpy
-pypdf
 httpx
 python-multipart
+slowapi
