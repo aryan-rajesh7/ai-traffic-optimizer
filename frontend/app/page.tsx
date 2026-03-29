@@ -62,45 +62,67 @@ export default function Home() {
     );
   }
 
-  return (
-    <main style={{
-      display: "flex",
-      height: "100vh",
-      width: "100vw",
-      overflow: "hidden",
-      background: "#0f0f1a"
-    }}>
-      <div style={{ flex: 1, position: "relative", pointerEvents: "none" }}>
+return (
+  <main style={{
+    display: "flex",
+    height: "100vh",
+    width: "100vw",
+    overflow: "hidden",
+    background: "#0f0f1a",
+    position: "relative"
+  }}>
+    <div style={{ flex: 1, position: "relative" }}>
       <Map
         traffic={traffic}
         onIntersectionClick={handleIntersectionClick}
       />
-      <div style={{
-        position: "absolute",
-        top: "12px",
-        left: "12px",
-        background: "rgba(0,0,0,0.7)",
-        color: "white",
-        padding: "8px 12px",
-        borderRadius: "8px",
-        fontSize: "12px",
-        backdropFilter: "blur(4px)",
-        pointerEvents: "auto",
-        zIndex: 10
-      }}>
-        {loading ? "Loading..." : `${traffic.length} intersections live`}
-      </div>
+    </div>
+
+    <div style={{
+      position: "fixed",
+      top: "12px",
+      left: "12px",
+      background: "rgba(0,0,0,0.85)",
+      color: "white",
+      padding: "8px 12px",
+      borderRadius: "8px",
+      fontSize: "12px",
+      zIndex: 9999,
+      pointerEvents: "none",
+      userSelect: "none"
+    }}>
+      {loading ? "Loading..." : `${traffic.length} intersections live`}
+    </div>
+
+    <div style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: "380px",
+      zIndex: 9998,
+      pointerEvents: "none"
+    }}>
       <StatsBar traffic={traffic} />
+    </div>
+
+    <div style={{
+      position: "fixed",
+      bottom: "40px",
+      left: "12px",
+      zIndex: 9998,
+      pointerEvents: "none"
+    }}>
       <Legend />
     </div>
-      <Sidebar
-        traffic={traffic}
-        loading={loading}
-        refreshing={refreshing}
-        lastUpdated={lastUpdated}
-        onIntersectionClick={handleIntersectionClick}
-        onRefresh={refetch}
-      />
-    </main>
-  );
+
+    <Sidebar
+      traffic={traffic}
+      loading={loading}
+      refreshing={refreshing}
+      lastUpdated={lastUpdated}
+      onIntersectionClick={handleIntersectionClick}
+      onRefresh={refetch}
+    />
+  </main>
+);
 }
