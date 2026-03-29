@@ -115,7 +115,7 @@ export default function MapComponent({ traffic, onIntersectionClick }: MapProps)
       <a href="https://openfreemap.org" target="_blank" rel="noopener noreferrer" style={{ color: "#aaa", pointerEvents: "auto" }}>OpenFreeMap</a>
       {" © "}
       <a href="https://www.openmaptiles.org" target="_blank" rel="noopener noreferrer" style={{ color: "#aaa", pointerEvents: "auto" }}>OpenMapTiles</a>
-      {" | Data aaaaa from "}
+      {" | Data from "}
       <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" style={{ color: "#aaa", pointerEvents: "auto" }}>OpenStreetMap</a>
     </p>
   </div>
