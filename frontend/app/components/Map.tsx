@@ -42,12 +42,13 @@ export default function MapComponent({ traffic, onIntersectionClick }: MapProps)
     });
 
     map.current.addControl(new maplibregl.NavigationControl());
-    map.current.addControl(
-      new maplibregl.AttributionControl({
+   map.current.addControl(
+    new maplibregl.AttributionControl({
       compact: false,
       customAttribution: '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>'
-    })
-    );
+    }),
+    'bottom-left'
+  );
 
   }, []);
   
@@ -93,9 +94,25 @@ export default function MapComponent({ traffic, onIntersectionClick }: MapProps)
   }, [traffic, onIntersectionClick]);
 
   return (
-  <div
-    ref={mapContainer}
-    style={{ width: "100%", height: "100vh", pointerEvents: "all" }}
-  />
+  <div style={{ width: "100%", height: "100vh", position: "relative" }}>
+    <style>{`
+      .maplibregl-ctrl-attrib {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        background: rgba(0,0,0,0.7) !important;
+        color: white !important;
+        border-radius: 4px !important;
+      }
+      .maplibregl-ctrl-attrib a {
+        color: #aaa !important;
+      }
+      .maplibregl-ctrl-attrib-button {
+        display: none !important;
+      }
+    `}</style>
+    <div ref={mapContainer} style={{ width: "100%", height: "100%" }} />
+  </div>
 );
+
 }
