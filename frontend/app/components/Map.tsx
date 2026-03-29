@@ -98,7 +98,7 @@ export default function MapComponent({ traffic, onIntersectionClick, customLocat
     <div ref={mapContainer} style={{ width: "100%", height: "100%" }} />
     <p style={{
       position: "absolute",
-      bottom: "8px",
+      top: "8px",
       left: "50%",
       transform: "translateX(-50%)",
       zIndex: 99999,
