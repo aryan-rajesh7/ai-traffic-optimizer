@@ -42,13 +42,12 @@ export default function MapComponent({ traffic, onIntersectionClick }: MapProps)
     });
 
     map.current.addControl(new maplibregl.NavigationControl());
-   map.current.addControl(
-    new maplibregl.AttributionControl({
+    map.current.addControl(
+      new maplibregl.AttributionControl({
       compact: false,
       customAttribution: '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>'
-    }),
-    'bottom-left'
-  );
+    })
+    );
 
   }, []);
   
@@ -95,23 +94,30 @@ export default function MapComponent({ traffic, onIntersectionClick }: MapProps)
 
   return (
   <div style={{ width: "100%", height: "100vh", position: "relative" }}>
-    <style>{`
-      .maplibregl-ctrl-attrib {
-        display: block !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        background: rgba(0,0,0,0.7) !important;
-        color: white !important;
-        border-radius: 4px !important;
-      }
-      .maplibregl-ctrl-attrib a {
-        color: #aaa !important;
-      }
-      .maplibregl-ctrl-attrib-button {
-        display: none !important;
-      }
-    `}</style>
     <div ref={mapContainer} style={{ width: "100%", height: "100%" }} />
+    <p style={{
+      position: "absolute",
+      bottom: "8px",
+      left: "50%",
+      transform: "translateX(-50%)",
+      zIndex: 99999,
+      pointerEvents: "none",
+      whiteSpace: "nowrap",
+      fontSize: "11px",
+      color: "white",
+      background: "rgba(0,0,0,0.7)",
+      padding: "4px 10px",
+      borderRadius: "4px",
+      margin: 0
+    }}>
+      <a href="https://maplibre.org" target="_blank" rel="noopener noreferrer" style={{ color: "#aaa", pointerEvents: "auto" }}>MapLibre</a>
+      {" | "}
+      <a href="https://openfreemap.org" target="_blank" rel="noopener noreferrer" style={{ color: "#aaa", pointerEvents: "auto" }}>OpenFreeMap</a>
+      {" © "}
+      <a href="https://www.openmaptiles.org" target="_blank" rel="noopener noreferrer" style={{ color: "#aaa", pointerEvents: "auto" }}>OpenMapTiles</a>
+      {" | Data aaaaa from "}
+      <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" style={{ color: "#aaa", pointerEvents: "auto" }}>OpenStreetMap</a>
+    </p>
   </div>
 );
 
