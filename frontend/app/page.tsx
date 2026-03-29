@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import dynamic from "next/dynamic";
 import { useTrafficData, Intersection } from "./hooks/useTrafficData";
 import Sidebar from "./components/Sidebar";
@@ -25,16 +24,20 @@ const Map = dynamic(() => import("./components/Map"), {
 });
 
 export default function Home() {
-  const { traffic, loading, error, lastUpdated, refreshing, refetch } = useTrafficData();
-  
-  const [customLocations, setCustomLocations] = useState<Intersection[]>([]);
+  const {
+    traffic,
+    loading,
+    error,
+    lastUpdated,
+    refreshing,
+    refetch,
+    customLocations,
+    addCustomLocation,
+    removeCustomLocation,
+  } = useTrafficData();
 
   const handleIntersectionClick = (intersection: Intersection) => {
     console.log("Clicked:", intersection.name);
-  };
-
-  const handleAddCustomLocation = (newLocation: Intersection) => {
-    setCustomLocations((prev) => [...prev, newLocation]);
   };
 
   const combinedTraffic = [...traffic, ...customLocations];
@@ -84,23 +87,8 @@ export default function Home() {
         <Map
           traffic={combinedTraffic}
           onIntersectionClick={handleIntersectionClick}
+          customLocations={customLocations}
         />
-      </div>
-
-      <div style={{
-        position: "fixed",
-        top: "12px",
-        left: "12px",
-        background: "rgba(0,0,0,0.85)",
-        color: "white",
-        padding: "8px 12px",
-        borderRadius: "8px",
-        fontSize: "12px",
-        zIndex: 9999,
-        pointerEvents: "none",
-        userSelect: "none"
-      }}>
-        {loading ? "Loading..." : `${combinedTraffic.length} intersections live`}
       </div>
 
       <div style={{
@@ -125,16 +113,16 @@ export default function Home() {
       </div>
 
       <Sidebar
-      traffic={traffic}
-      loading={loading}
-      refreshing={refreshing}
-      lastUpdated={lastUpdated}
-      onIntersectionClick={handleIntersectionClick}
-      onRefresh={refetch}
-      onAddCustomLocation={addCustomLocation}
-      onRemoveCustomLocation={removeCustomLocation}
-      customLocations={customLocations}
-    />
+        traffic={traffic}
+        loading={loading}
+        refreshing={refreshing}
+        lastUpdated={lastUpdated}
+        onIntersectionClick={handleIntersectionClick}
+        onRefresh={refetch}
+        onAddCustomLocation={addCustomLocation}
+        onRemoveCustomLocation={removeCustomLocation}
+        customLocations={customLocations}
+      />
     </main>
   );
 }

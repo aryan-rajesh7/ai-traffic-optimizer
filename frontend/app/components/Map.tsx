@@ -8,6 +8,7 @@ import { Intersection } from "../hooks/useTrafficData";
 interface MapProps {
   traffic: Intersection[];
   onIntersectionClick: (intersection: Intersection) => void;
+  customLocations: Intersection[];
 }
 
 function getCongestionColor(score: number): string {
@@ -25,7 +26,7 @@ function getCongestionLabel(score: number): string {
 }
 
 
-export default function MapComponent({ traffic, onIntersectionClick }: MapProps) {
+export default function MapComponent({ traffic, onIntersectionClick, customLocations }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const markers = useRef<maplibregl.Marker[]>([]);
