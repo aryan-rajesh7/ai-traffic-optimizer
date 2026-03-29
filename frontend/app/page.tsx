@@ -125,14 +125,16 @@ export default function Home() {
       </div>
 
       <Sidebar
-        traffic={combinedTraffic}
-        loading={loading}
-        refreshing={refreshing}
-        lastUpdated={lastUpdated}
-        onIntersectionClick={handleIntersectionClick}
-        onRefresh={refetch}
-        onAddCustomLocation={handleAddCustomLocation}
-      />
+      traffic={traffic}
+      loading={loading}
+      refreshing={refreshing}
+      lastUpdated={lastUpdated}
+      onIntersectionClick={handleIntersectionClick}
+      onRefresh={refetch}
+      onAddCustomLocation={addCustomLocation}
+      onRemoveCustomLocation={removeCustomLocation}
+      customLocations={customLocations}
+    />
     </main>
   );
 }

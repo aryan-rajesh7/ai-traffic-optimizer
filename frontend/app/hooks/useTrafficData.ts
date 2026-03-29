@@ -16,6 +16,7 @@ export function useTrafficData() {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [customLocations, setCustomLocations] = useState<Intersection[]>([]);
 
   let retryDelay = 10000;
 
@@ -28,12 +29,10 @@ export function useTrafficData() {
       setTraffic(data.traffic ?? []);
       setLastUpdated(new Date());
       setError(null);
-
       retryDelay = 10000;
-    } catch (err) {
+    } catch {
       setError("Backend waking up... Please wait 1-2 minutes");
-      retryDelay = Math.min(retryDelay * 1.5, 60000); // max 60s
-
+      retryDelay = Math.min(retryDelay * 1.5, 60000);
       if (document.visibilityState === "visible") {
         setTimeout(() => fetchTraffic(), retryDelay);
       }
@@ -58,6 +57,14 @@ export function useTrafficData() {
     };
   }, [fetchTraffic]);
 
+  const addCustomLocation = (location: Intersection) => {
+    setCustomLocations((prev) => [...prev, location]);
+  };
+
+  const removeCustomLocation = (name: string) => {
+    setCustomLocations((prev) => prev.filter((l) => l.name !== name));
+  };
+
   return {
     traffic,
     loading,
@@ -65,5 +72,8 @@ export function useTrafficData() {
     lastUpdated,
     refreshing,
     refetch: () => fetchTraffic(true),
+    customLocations,
+    addCustomLocation,
+    removeCustomLocation,
   };
 }
