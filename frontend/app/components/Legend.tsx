@@ -10,16 +10,12 @@ export default function Legend() {
 
   return (
     <div style={{
-      position: "absolute",
-      bottom: "40px",
-      left: "12px",
       background: "rgba(0,0,0,0.75)",
       backdropFilter: "blur(8px)",
       borderRadius: "10px",
       padding: "10px 14px",
       color: "white",
       fontSize: "12px",
-      zIndex: 10,
     }}>
       <p style={{ fontWeight: "bold", margin: "0 0 8px", fontSize: "11px", color: "#888" }}>
         CONGESTION LEVEL
