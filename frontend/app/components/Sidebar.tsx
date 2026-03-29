@@ -19,7 +19,9 @@ interface SidebarProps {
   lastUpdated: Date | null;
   onIntersectionClick: (intersection: Intersection) => void;
   onRefresh: () => void;
-  onAddCustomLocation: (intersection: Intersection) => void; // Added missing prop
+  onAddCustomLocation: (location: Intersection) => void;
+  onRemoveCustomLocation: (name: string) => void;
+  customLocations: Intersection[];
 }
 
 function getCongestionColor(score: number): string {
@@ -44,44 +46,48 @@ export default function Sidebar({
   onIntersectionClick,
   onRefresh,
   onAddCustomLocation,
+  onRemoveCustomLocation,
+  customLocations,
 }: SidebarProps) {
   const [recommendation, setRecommendation] = useState<string | null>(null);
   const [explanation, setExplanation] = useState<string | null>(null);
   const [recLoading, setRecLoading] = useState(false);
   const [activeIntersection, setActiveIntersection] = useState<string | null>(null);
-  
   const [customAddress, setCustomAddress] = useState("");
   const [customName, setCustomName] = useState("");
   const [customResult, setCustomResult] = useState<string | null>(null);
   const [customLoading, setCustomLoading] = useState(false);
+  interface MlPrediction {
+  current_congestion: number;
+  predicted_congestion: number;
+  model: string;
+}
 
+const [mlPrediction, setMlPrediction] = useState<MlPrediction | null>(null);
   const getRecommendation = async (intersection: Intersection) => {
     setRecLoading(true);
     setActiveIntersection(intersection.name);
     setRecommendation(null);
     setExplanation(null);
+    setMlPrediction(null);
 
     try {
       const encodedName = encodeURIComponent(intersection.name);
-
       const [recRes, expRes] = await Promise.all([
         fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/recommend/${encodedName}`),
         fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/explain/${encodedName}`),
       ]);
-
       const recData = await recRes.json();
       const expData = await expRes.json();
-
       setRecommendation(recData.recommendation);
       setExplanation(expData.explanation);
-    } catch (err) {
+    } catch {
       setRecommendation("Failed to get recommendation. Please try again.");
     } finally {
       setRecLoading(false);
     }
   };
 
-  // Integrated geocoding logic
   const checkCustomLocation = async () => {
     if (!customAddress || !customName) return;
     setCustomLoading(true);
@@ -89,19 +95,25 @@ export default function Sidebar({
 
     try {
       const geoRes = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(customAddress)}&format=json&limit=1`,
-        { headers: { "Accept-Language": "en" } }
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(customAddress)}&format=json&limit=1&addressdetails=1`,
+        {
+          headers: {
+            "Accept-Language": "en",
+            "User-Agent": "ai-traffic-optimizer"
+          }
+        }
       );
       const geoData = await geoRes.json();
 
       if (!geoData || geoData.length === 0) {
-        setCustomResult("Address not found. Try being more specific.");
+        setCustomResult("Address not found. Try: Street Name City State e.g. 'Hollywood Blvd Los Angeles California'");
         setCustomLoading(false);
         return;
       }
 
       const lat = parseFloat(geoData[0].lat);
       const lon = parseFloat(geoData[0].lon);
+      const foundAddress = geoData[0].display_name;
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/traffic/custom?lat=${lat}&lon=${lon}&name=${encodeURIComponent(customName)}`
@@ -110,7 +122,7 @@ export default function Sidebar({
 
       const newLocation: Intersection = {
         name: customName,
-        city: geoData[0].display_name.split(",")[1]?.trim() ?? "Custom",
+        city: geoData[0].address?.city ?? geoData[0].address?.town ?? geoData[0].address?.state ?? "Custom",
         lat,
         lon,
         congestion_score: data.congestion_score,
@@ -119,11 +131,13 @@ export default function Sidebar({
       };
 
       onAddCustomLocation(newLocation);
-      setCustomResult(`Added to map! Congestion: ${data.congestion_score} (${data.level})\n${stripMarkdown(data.recommendation)}`);
+      setCustomResult(
+        `Found: ${foundAddress.split(",").slice(0, 3).join(",")}\nCongestion: ${data.congestion_score} (${data.level})\n${stripMarkdown(data.recommendation)}`
+      );
       setCustomName("");
       setCustomAddress("");
     } catch {
-      setCustomResult("Failed to fetch data. Please try again.");
+      setCustomResult("Failed to fetch. Check your connection and try again.");
     } finally {
       setCustomLoading(false);
     }
@@ -141,19 +155,8 @@ export default function Sidebar({
         gap: "12px"
       }}>
         <div style={{ borderBottom: "1px solid #333", paddingBottom: "12px" }}>
-          <div style={{
-            height: "20px",
-            width: "60%",
-            background: "#0f3460",
-            borderRadius: "4px",
-            marginBottom: "8px"
-          }} />
-          <div style={{
-            height: "12px",
-            width: "40%",
-            background: "#0f3460",
-            borderRadius: "4px"
-          }} />
+          <div style={{ height: "20px", width: "60%", background: "#0f3460", borderRadius: "4px", marginBottom: "8px" }} />
+          <div style={{ height: "12px", width: "40%", background: "#0f3460", borderRadius: "4px" }} />
         </div>
         {[1, 2, 3, 4, 5].map((i) => (
           <div key={i} style={{
@@ -179,6 +182,8 @@ export default function Sidebar({
       flexDirection: "column",
       gap: "12px"
     }}>
+
+      {/* Header */}
       <div style={{ borderBottom: "1px solid #333", paddingBottom: "12px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h1 style={{ fontSize: "18px", fontWeight: "bold", margin: 0 }}>
@@ -208,17 +213,14 @@ export default function Sidebar({
         </p>
       </div>
 
-      <div style={{
-        background: "#0f3460",
-        borderRadius: "8px",
-        padding: "12px",
-      }}>
+      {/* Custom Location */}
+      <div style={{ background: "#0f3460", borderRadius: "8px", padding: "12px" }}>
         <p style={{ fontWeight: "bold", fontSize: "13px", margin: "0 0 8px" }}>
           Check Custom Location
         </p>
         <input
           type="text"
-          placeholder="Location name e.g. Times Square"
+          placeholder="Name e.g. My Home, Office"
           value={customName}
           onChange={(e) => setCustomName(e.target.value)}
           style={{
@@ -234,7 +236,7 @@ export default function Sidebar({
         />
         <input
           type="text"
-          placeholder="Address e.g. Times Square, New York"
+          placeholder="e.g. 1600 Pennsylvania Ave Washington DC"
           value={customAddress}
           onChange={(e) => setCustomAddress(e.target.value)}
           style={{
@@ -245,9 +247,12 @@ export default function Sidebar({
             background: "#1a1a2e",
             color: "white",
             fontSize: "12px",
-            marginBottom: "6px"
+            marginBottom: "4px"
           }}
         />
+        <p style={{ fontSize: "10px", color: "#666", margin: "0 0 6px" }}>
+          Tip: Street Name City State — no commas needed
+        </p>
         <button
           onClick={checkCustomLocation}
           disabled={customLoading || !customAddress || !customName}
@@ -280,6 +285,49 @@ export default function Sidebar({
           </div>
         )}
       </div>
+
+      {customLocations.length > 0 && (
+        <div style={{ background: "#0f3460", borderRadius: "8px", padding: "12px" }}>
+          <p style={{ fontWeight: "bold", fontSize: "13px", margin: "0 0 8px" }}>
+            Custom Locations ({customLocations.length})
+          </p>
+          {customLocations.map((loc) => {
+            const color = getCongestionColor(loc.congestion_score);
+            const label = getCongestionLabel(loc.congestion_score);
+            return (
+              <div key={loc.name} style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "6px",
+                background: "#16213e",
+                borderRadius: "6px",
+                padding: "6px 8px"
+              }}>
+                <div>
+                  <p style={{ margin: 0, fontSize: "12px", fontWeight: "bold" }}>{loc.name}</p>
+                  <p style={{ margin: 0, fontSize: "11px", color }}>{label} ({loc.congestion_score})</p>
+                  <p style={{ margin: 0, fontSize: "10px", color: "#666" }}>{loc.city}</p>
+                </div>
+                <button
+                  onClick={() => onRemoveCustomLocation(loc.name)}
+                  style={{
+                    background: "#ef4444",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "2px 8px",
+                    cursor: "pointer",
+                    fontSize: "11px"
+                  }}
+                >
+                  Remove
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {traffic.map((intersection) => {
         const color = getCongestionColor(intersection.congestion_score);
@@ -372,7 +420,6 @@ export default function Sidebar({
                   AI Recommendation
                 </p>
                 <p style={{ margin: 0, color: "#ddd" }}>{stripMarkdown(recommendation)}</p>
-
                 {explanation && (
                   <>
                     <p style={{ color: "#60a5fa", fontWeight: "bold", margin: "10px 0 6px" }}>
@@ -380,6 +427,16 @@ export default function Sidebar({
                     </p>
                     <p style={{ margin: 0, color: "#ddd" }}>{stripMarkdown(explanation)}</p>
                   </>
+                )}
+                {mlPrediction && (
+                  <div style={{ marginTop: "8px" }}>
+                    <p style={{ color: "#34d399", fontWeight: "bold", margin: "0 0 4px" }}>
+                      ML Prediction (XGBoost)
+                    </p>
+                    <p style={{ margin: 0, color: "#ddd", fontSize: "11px" }}>
+                      Current: {mlPrediction.current_congestion} → Predicted: {mlPrediction.predicted_congestion}
+                    </p>
+                  </div>
                 )}
               </div>
             )}
