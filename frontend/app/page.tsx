@@ -124,7 +124,6 @@ export default function Home() {
         onRemoveCustomLocation={removeCustomLocation}
         customLocations={customLocations}
       />
-      {/* <MLGraphs /> */}
     </main>
   );
 }
