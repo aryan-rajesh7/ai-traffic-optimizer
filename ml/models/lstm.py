@@ -9,29 +9,37 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import os
 import pickle
-from supabase import create_client
-from dotenv import load_dotenv
-
-load_dotenv()
-
-supabase = create_client(
-    os.getenv("SUPABASE_URL"),
-    os.getenv("SUPABASE_SERVICE_ROLE_KEY")
-)
 
 SEQUENCE_LENGTH = 10
 
-def fetch_training_data() -> pd.DataFrame:
-    result = (
-        supabase.table("sensor_readings")
-        .select("*, intersections(name, city)")
-        .order("recorded_at", desc=False)
-        .execute()
-    )
-    df = pd.DataFrame(result.data)
+def generate_synthetic_data() -> pd.DataFrame:
+    print("Generating synthetic training data...")
+    np.random.seed(42)
+    n_readings = 1000
+    intersection_ids = [f"intersection_{i}" for i in range(5)]
+    cities = ["New York", "San Francisco", "Chicago", "Los Angeles", "Seattle"]
+    rows = []
+    base_time = pd.Timestamp.now() - pd.Timedelta(hours=24)
+    for i in range(n_readings):
+        for j, (iid, city) in enumerate(zip(intersection_ids, cities)):
+            hour = (base_time + pd.Timedelta(minutes=i * 2)).hour
+            rush_hour = 1 if (7 <= hour <= 9 or 16 <= hour <= 18) else 0
+            base_score = 0.3 + rush_hour * 0.3 + np.random.normal(0, 0.1)
+            congestion_score = float(np.clip(base_score, 0.0, 1.0))
+            rows.append({
+                "intersection_id": iid,
+                "city": city,
+                "congestion_score": congestion_score,
+                "average_speed": float(np.random.uniform(5, 60)),
+                "vehicle_count": int(np.random.randint(10, 100)),
+                "recorded_at": (base_time + pd.Timedelta(minutes=i * 2)).isoformat(),
+            })
+    df = pd.DataFrame(rows)
+    print(f"Generated {len(df)} synthetic readings")
     return df
 
 def prepare_features(df: pd.DataFrame) -> pd.DataFrame:
+    print("Preparing features...")
     df["recorded_at"] = pd.to_datetime(df["recorded_at"])
     df["hour"] = df["recorded_at"].dt.hour
     df["day_of_week"] = df["recorded_at"].dt.dayofweek
@@ -42,6 +50,7 @@ def prepare_features(df: pd.DataFrame) -> pd.DataFrame:
     df["lag_1"] = df.groupby("intersection_id")["congestion_score"].shift(1)
     df["lag_2"] = df.groupby("intersection_id")["congestion_score"].shift(2)
     df = df.dropna()
+    print(f"Features prepared. Shape: {df.shape}")
     return df
 
 def create_sequences(data: np.ndarray, sequence_length: int):
@@ -50,8 +59,6 @@ def create_sequences(data: np.ndarray, sequence_length: int):
         X.append(data[i:i + sequence_length])
         y.append(data[i + sequence_length, 0])
     return np.array(X), np.array(y)
-
-
 
 class CongestionLSTM(nn.Module):
     def __init__(self, input_size=5, hidden_size=64, num_layers=2, dropout=0.2):
@@ -82,9 +89,7 @@ def train_lstm(df):
     scaler = MinMaxScaler()
     scaled = scaler.fit_transform(df[features])
     X, y = create_sequences(scaled, SEQUENCE_LENGTH)
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     X_train = torch.FloatTensor(X_train)
     X_test = torch.FloatTensor(X_test)
     y_train = torch.FloatTensor(y_train)
@@ -94,8 +99,7 @@ def train_lstm(df):
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
     train_losses = []
     test_losses = []
-    epochs = 100
-    for epoch in range(epochs):
+    for epoch in range(100):
         model.train()
         optimizer.zero_grad()
         output = model(X_train)
@@ -109,22 +113,17 @@ def train_lstm(df):
         train_losses.append(loss.item())
         test_losses.append(test_loss.item())
         if (epoch + 1) % 10 == 0:
-            print(f"Epoch {epoch+1}/{epochs} - Train Loss: {loss.item():.4f} - Test Loss: {test_loss.item():.4f}")
+            print(f"Epoch {epoch+1}/100 - Train Loss: {loss.item():.4f} - Test Loss: {test_loss.item():.4f}")
     return model, scaler, train_losses, test_losses, X_test, y_test
 
 def save_model(model, scaler):
     os.makedirs("ml/saved_models", exist_ok=True)
     torch.save(model.state_dict(), "ml/saved_models/lstm_model.pt")
-    import pickle
     with open("ml/saved_models/scaler.pkl", "wb") as f:
         pickle.dump(scaler, f)
-
-
-
-# Graphs
+    print("Model saved to ml/saved_models/")
 
 def plot_training_loss(train_losses, test_losses):
-    print("Generating training loss graph...")
     os.makedirs("ml/plots", exist_ok=True)
     plt.figure(figsize=(10, 6))
     plt.plot(train_losses, label="Training Loss", color="blue", linewidth=2)
@@ -139,24 +138,16 @@ def plot_training_loss(train_losses, test_losses):
     plt.close()
     print("Saved training_loss.png")
 
-
 def plot_congestion_over_time(df):
-    print("Generating congestion over time graph...")
     os.makedirs("ml/plots", exist_ok=True)
     plt.figure(figsize=(14, 7))
-    for intersection_id in df["intersection_id"].unique():
-        subset = df[df["intersection_id"] == intersection_id]
-        name = subset.iloc[0]["intersections"]["name"] if isinstance(subset.iloc[0]["intersections"], dict) else intersection_id
-        plt.plot(
-            subset["recorded_at"],
-            subset["congestion_score"],
-            label=name,
-            linewidth=1.5,
-            alpha=0.8
-        )
-    plt.title("Congestion Score Over Time by Intersection")
+    for iid in df["intersection_id"].unique():
+        subset = df[df["intersection_id"] == iid]
+        city = subset.iloc[0]["city"]
+        plt.plot(subset["recorded_at"], subset["congestion_score"], label=city, linewidth=1.5, alpha=0.8)
+    plt.title("Congestion Score Over Time by City")
     plt.xlabel("Time")
-    plt.ylabel("Congestion Score (0=free, 1=gridlock)")
+    plt.ylabel("Congestion Score")
     plt.legend(loc="upper right", fontsize=8)
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
@@ -164,9 +155,7 @@ def plot_congestion_over_time(df):
     plt.close()
     print("Saved congestion_over_time.png")
 
-
 def plot_prediction_vs_actual(model, X_test, y_test, scaler):
-    print("Generating prediction vs actual graph...")
     os.makedirs("ml/plots", exist_ok=True)
     model.eval()
     with torch.no_grad():
@@ -185,36 +174,20 @@ def plot_prediction_vs_actual(model, X_test, y_test, scaler):
     plt.close()
     print("Saved prediction_vs_actual.png")
 
-
 def plot_city_comparison(df):
-    print("Generating city comparison graph...")
     os.makedirs("ml/plots", exist_ok=True)
-    city_avg = df.groupby("intersection_id")["congestion_score"].mean()
-    names = []
-    scores = []
-    for intersection_id, score in city_avg.items():
-        subset = df[df["intersection_id"] == intersection_id]
-        name = subset.iloc[0]["intersections"]["name"] if isinstance(subset.iloc[0]["intersections"], dict) else intersection_id
-        names.append(name)
-        scores.append(score)
-    colors = ["red" if s > 0.3 else "orange" if s > 0.15 else "green" for s in scores]
+    city_avg = df.groupby("city")["congestion_score"].mean()
+    colors = ["red" if s > 0.3 else "orange" if s > 0.15 else "green" for s in city_avg.values]
     plt.figure(figsize=(12, 6))
-    bars = plt.bar(names, scores, color=colors, alpha=0.8, edgecolor="black")
-    plt.title("Average Congestion Score by Intersection")
-    plt.xlabel("Intersection")
+    bars = plt.bar(city_avg.index, city_avg.values, color=colors, alpha=0.8, edgecolor="black")
+    plt.title("Average Congestion Score by City")
+    plt.xlabel("City")
     plt.ylabel("Average Congestion Score")
     plt.xticks(rotation=15, ha="right")
-    for bar, score in zip(bars, scores):
-        plt.text(
-            bar.get_x() + bar.get_width() / 2,
-            bar.get_height() + 0.005,
-            f"{score:.2f}",
-            ha="center",
-            fontsize=10
-        )
+    for bar, score in zip(bars, city_avg.values):
+        plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.005, f"{score:.2f}", ha="center", fontsize=10)
     plt.grid(True, alpha=0.3, axis="y")
     plt.tight_layout()
     plt.savefig("ml/plots/city_comparison.png", dpi=150)
     plt.close()
     print("Saved city_comparison.png")
-    
