@@ -98,3 +98,4 @@ yarn-error.log*
 
 # ML Models
 /public/ml/plots/
+public/ml/plots/
