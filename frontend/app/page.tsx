@@ -5,7 +5,6 @@ import { useTrafficData, Intersection } from "./hooks/useTrafficData";
 import Sidebar from "./components/Sidebar";
 import Legend from "./components/Legend";
 import StatsBar from "./components/StatsBar";
-import MLGraphs from "./components/MLGraphs";
 
 const Map = dynamic(() => import("./components/Map"), {
   ssr: false,
