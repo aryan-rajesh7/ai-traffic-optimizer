@@ -18,20 +18,45 @@ The AI Traffic Optimizer replaces static traffic light timing models with dynami
 
 ## Tech Stack
 
+**Languages**
+* Python 3.11 (Core backend & ML scripting)
+* TypeScript / JavaScript (Type-safe frontend development)
+* C++ (High-performance extensions via `pybind11`)
+* SQL (Database querying & management)
+
 **Frontend**
-* Next.js / React (Hooks for stream state management)
-* MapLibre GL JS (Geospatial vector rendering)
-* Tailwind CSS
+* Next.js 14 / React 18 (Server-side rendering & stream state management)
+* MapLibre GL JS / OpenFreeMap (Geospatial vector rendering)
+* Tailwind CSS (Utility-first styling)
 
 **Backend**
-* Python / FastAPI / Uvicorn (Asynchronous ASGI framework)
+* FastAPI / Uvicorn (Asynchronous ASGI framework)
 * WebSockets (Real-time duplex streaming)
-* SlowAPI (Rate limiting)
+* Celery / Redis (Distributed task queue & message broker)
+* SlowAPI (Endpoint rate limiting)
+* httpx / python-dotenv (Async HTTP client & environment configuration)
+
+**Machine Learning & Data Processing**
+* PyTorch / LSTM (Deep learning & time-series forecasting)
+* XGBoost / ONNX Runtime (Gradient boosting & optimized inference)
+* scikit-learn / NumPy / pandas (Data manipulation & traditional ML)
+* Matplotlib / Seaborn (Exploratory data visualization)
 
 **APIs & AI**
-* TomTom Traffic Flow API
-* Nominatim Geocoding API
-* Google Gemini 2.5 Flash
+* Google Gemini 2.5 Flash (Core LLM reasoning engine)
+* LangChain / RAG (Retrieval-Augmented Generation pipeline)
+* TomTom Traffic Flow API (Live traffic telemetry ingestion)
+* Nominatim OpenStreetMap (Address-to-coordinate geocoding)
+
+**DevOps & Infrastructure**
+* Docker / Docker Compose (Containerization & local orchestration)
+* GitHub Actions (Automated CI/CD pipelines)
+* Vercel / Hugging Face Spaces / Koyeb (Cloud deployment & hosting environment)
+
+**Tools**
+* Git / GitHub (Version control & repository management)
+* pnpm / npm / pip (Dependency management)
+* VS Code / virtualenv (Development environment)
 
 ## Directory Structure
 
