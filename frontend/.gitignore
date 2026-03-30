@@ -45,4 +45,5 @@ frontend/.env.local
 frontend/.env*.local
 
 # Local ML Graphs
-frontend/public
+/public
+/ml-graphs
