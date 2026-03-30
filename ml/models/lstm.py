@@ -13,30 +13,30 @@ import pickle
 SEQUENCE_LENGTH = 10
 
 def generate_synthetic_data() -> pd.DataFrame:
-    print("Generating synthetic training data...")
-    np.random.seed(42)
-    n_readings = 1000
-    intersection_ids = [f"intersection_{i}" for i in range(5)]
-    cities = ["New York", "San Francisco", "Chicago", "Los Angeles", "Seattle"]
-    rows = []
-    base_time = pd.Timestamp.now() - pd.Timedelta(hours=24)
-    for i in range(n_readings):
-        for j, (iid, city) in enumerate(zip(intersection_ids, cities)):
-            hour = (base_time + pd.Timedelta(minutes=i * 2)).hour
-            rush_hour = 1 if (7 <= hour <= 9 or 16 <= hour <= 18) else 0
-            base_score = 0.3 + rush_hour * 0.3 + np.random.normal(0, 0.1)
-            congestion_score = float(np.clip(base_score, 0.0, 1.0))
-            rows.append({
-                "intersection_id": iid,
-                "city": city,
-                "congestion_score": congestion_score,
-                "average_speed": float(np.random.uniform(5, 60)),
-                "vehicle_count": int(np.random.randint(10, 100)),
-                "recorded_at": (base_time + pd.Timedelta(minutes=i * 2)).isoformat(),
-            })
-    df = pd.DataFrame(rows)
-    print(f"Generated {len(df)} synthetic readings")
-    return df
+        print("Generating synthetic training data...")
+        np.random.seed(42)
+        n_readings = 1000
+        intersection_ids = [f"intersection_{i}" for i in range(5)]
+        cities = ["New York", "San Francisco", "Chicago", "Los Angeles", "Seattle"]
+        rows = []
+        base_time = pd.Timestamp.now() - pd.Timedelta(hours=24)
+        for i in range(n_readings):
+            for j, (iid, city) in enumerate(zip(intersection_ids, cities)):
+                hour = (base_time + pd.Timedelta(minutes=i * 2)).hour
+                rush_hour = 1 if (7 <= hour <= 9 or 16 <= hour <= 18) else 0
+                base_score = 0.3 + rush_hour * 0.3 + np.random.normal(0, 0.1)
+                congestion_score = float(np.clip(base_score, 0.0, 1.0))
+                rows.append({
+                    "intersection_id": iid,
+                    "city": city,
+                    "congestion_score": congestion_score,
+                    "average_speed": float(np.random.uniform(5, 60)),
+                    "vehicle_count": int(np.random.randint(10, 100)),
+                    "recorded_at": (base_time + pd.Timedelta(minutes=i * 2)).isoformat(),
+                })
+        df = pd.DataFrame(rows)
+        print(f"Generated {len(df)} synthetic readings")
+        return df
 
 def prepare_features(df: pd.DataFrame) -> pd.DataFrame:
     print("Preparing features...")
