@@ -43,3 +43,6 @@ next-env.d.ts
 # Frontend env
 frontend/.env.local
 frontend/.env*.local
+
+# Local ML Graphs
+frontend/public
