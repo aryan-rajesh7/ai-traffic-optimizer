@@ -12,7 +12,7 @@ export interface Intersection {
 
 export function useTrafficData() {
   const [traffic, setTraffic] = useState<Intersection[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [refreshing, setRefreshing] = useState(false);
