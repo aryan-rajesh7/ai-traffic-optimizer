@@ -24,26 +24,55 @@ export default function StatsBar({ traffic }: StatsBarProps) {
   }
 
   return (
-  <div
-    style={{
-      position: "absolute",
-      top: "12px",
-      left: "50%",
-      transform: "translateX(-50%)",
-      background: "rgba(0, 0, 0, 0.5)",
-      backdropFilter: "blur(8px)",
-      borderRadius: "12px",
-      padding: "8px 20px",
-      display: "flex",
-      gap: "24px",
-      alignItems: "center",
-      color: "white",
-      fontSize: "12px",
-      zIndex: 10,
-      whiteSpace: "nowrap",
-    }}
-  >
-  </div>
-);
+    <div
+      style={{
+        position: "absolute",
+        top: "12px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        background: "rgba(255, 255, 255, 0.85)", // Light, translucent gray-white
+        backdropFilter: "blur(8px)",
+        border: "1px solid #d1d5db", // Subtle gray border
+        boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+        borderRadius: "12px",
+        padding: "8px 24px",
+        display: "flex",
+        gap: "24px",
+        alignItems: "center",
+        color: "#1f2937", // Dark gray text
+        fontSize: "12px",
+        zIndex: 10,
+        whiteSpace: "nowrap",
+      }}
+    >
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <span style={{ fontSize: "10px", color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.5px" }}>Avg Congestion</span>
+        <span style={{ fontWeight: "bold", fontSize: "14px", color: getCongestionColor(avgCongestion) }}>
+          {avgCongestion.toFixed(2)}
+        </span>
+      </div>
 
+      <div style={{ width: "1px", height: "24px", background: "#e5e7eb" }} />
+
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <span style={{ fontSize: "10px", color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.5px" }}>Worst Traffic</span>
+        <span style={{ fontWeight: "bold", fontSize: "14px", color: getCongestionColor(mostCongested.congestion_score) }}>
+          {mostCongested.name}
+        </span>
+      </div>
+
+      <div style={{ width: "1px", height: "24px", background: "#e5e7eb" }} />
+
+      <div style={{ display: "flex", gap: "16px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#22c55e" }} />
+          <span style={{ fontWeight: "500" }}>{clearCount} Clear</span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#ef4444" }} />
+          <span style={{ fontWeight: "500" }}>{heavyCount} Heavy</span>
+        </div>
+      </div>
+    </div>
+  );
 }
