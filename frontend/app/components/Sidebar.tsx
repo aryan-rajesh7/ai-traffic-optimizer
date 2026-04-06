@@ -25,10 +25,10 @@ interface SidebarProps {
 }
 
 function getCongestionColor(score: number): string {
-  if (score < 0.3) return "#22c55e";
-  if (score < 0.6) return "#eab308";
-  if (score < 0.8) return "#f97316";
-  return "#ef4444";
+  if (score < 0.3) return "#22c55e"; // Green
+  if (score < 0.6) return "#eab308"; // Yellow
+  if (score < 0.8) return "#f97316"; // Orange
+  return "#ef4444"; // Red
 }
 
 function getCongestionLabel(score: number): string {
@@ -57,13 +57,15 @@ export default function Sidebar({
   const [customName, setCustomName] = useState("");
   const [customResult, setCustomResult] = useState<string | null>(null);
   const [customLoading, setCustomLoading] = useState(false);
+  
   interface MlPrediction {
-  current_congestion: number;
-  predicted_congestion: number;
-  model: string;
-}
+    current_congestion: number;
+    predicted_congestion: number;
+    model: string;
+  }
 
-const [mlPrediction, setMlPrediction] = useState<MlPrediction | null>(null);
+  const [mlPrediction, setMlPrediction] = useState<MlPrediction | null>(null);
+  
   const getRecommendation = async (intersection: Intersection) => {
     setRecLoading(true);
     setActiveIntersection(intersection.name);
@@ -147,24 +149,25 @@ const [mlPrediction, setMlPrediction] = useState<MlPrediction | null>(null);
     return (
       <div style={{
         width: "380px",
-        background: "#1a1a2e",
-        color: "white",
+        background: "#f8fafc",
+        color: "#0f172a",
         padding: "16px",
         display: "flex",
         flexDirection: "column",
-        gap: "12px"
+        gap: "12px",
+        borderRight: "1px solid #e2e8f0"
       }}>
-        <div style={{ borderBottom: "1px solid #333", paddingBottom: "12px" }}>
-          <div style={{ height: "20px", width: "60%", background: "#0f3460", borderRadius: "4px", marginBottom: "8px" }} />
-          <div style={{ height: "12px", width: "40%", background: "#0f3460", borderRadius: "4px" }} />
+        <div style={{ borderBottom: "1px solid #e2e8f0", paddingBottom: "12px" }}>
+          <div style={{ height: "20px", width: "60%", background: "#e2e8f0", borderRadius: "4px", marginBottom: "8px" }} />
+          <div style={{ height: "12px", width: "40%", background: "#e2e8f0", borderRadius: "4px" }} />
         </div>
         {[1, 2, 3, 4, 5].map((i) => (
           <div key={i} style={{
-            background: "#0f3460",
+            background: "#e2e8f0",
             borderRadius: "8px",
             padding: "12px",
             height: "80px",
-            opacity: 1 - i * 0.15
+            opacity: Math.max(0.2, 1 - i * 0.15)
           }} />
         ))}
       </div>
@@ -174,39 +177,41 @@ const [mlPrediction, setMlPrediction] = useState<MlPrediction | null>(null);
   return (
     <div style={{
       width: "380px",
-      background: "#1a1a2e",
-      color: "white",
+      background: "#f8fafc",
+      color: "#0f172a",
       padding: "16px",
       overflowY: "auto",
       display: "flex",
       flexDirection: "column",
-      gap: "12px"
+      gap: "16px",
+      borderRight: "1px solid #e2e8f0"
     }}>
 
       {/* Header */}
-      <div style={{ borderBottom: "1px solid #333", paddingBottom: "12px" }}>
+      <div style={{ borderBottom: "1px solid #e2e8f0", paddingBottom: "12px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h1 style={{ fontSize: "18px", fontWeight: "bold", margin: 0 }}>
+          <h1 style={{ fontSize: "18px", fontWeight: "bold", margin: 0, color: "#1e293b" }}>
             AI Traffic Optimizer
           </h1>
           <button
             onClick={onRefresh}
             disabled={refreshing}
             style={{
-              background: refreshing ? "#333" : "#533483",
+              background: refreshing ? "#94a3b8" : "#2563eb",
               color: "white",
               border: "none",
               borderRadius: "6px",
-              padding: "4px 10px",
+              padding: "6px 12px",
               fontSize: "11px",
               cursor: refreshing ? "not-allowed" : "pointer",
-              fontWeight: "bold"
+              fontWeight: "bold",
+              transition: "background-color 0.2s"
             }}
           >
             {refreshing ? "Refreshing..." : "Refresh"}
           </button>
         </div>
-        <p style={{ fontSize: "11px", color: "#888", margin: "4px 0 0" }}>
+        <p style={{ fontSize: "11px", color: "#64748b", margin: "6px 0 0" }}>
           {lastUpdated
             ? `Last updated: ${lastUpdated.toLocaleTimeString()}`
             : "Loading live traffic data..."}
@@ -214,8 +219,14 @@ const [mlPrediction, setMlPrediction] = useState<MlPrediction | null>(null);
       </div>
 
       {/* Custom Location */}
-      <div style={{ background: "#0f3460", borderRadius: "8px", padding: "12px" }}>
-        <p style={{ fontWeight: "bold", fontSize: "13px", margin: "0 0 8px" }}>
+      <div style={{ 
+        background: "#ffffff", 
+        borderRadius: "8px", 
+        padding: "16px",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+        border: "1px solid #e2e8f0"
+      }}>
+        <p style={{ fontWeight: "bold", fontSize: "13px", margin: "0 0 10px", color: "#1e293b" }}>
           Check Custom Location
         </p>
         <input
@@ -225,13 +236,15 @@ const [mlPrediction, setMlPrediction] = useState<MlPrediction | null>(null);
           onChange={(e) => setCustomName(e.target.value)}
           style={{
             width: "100%",
-            padding: "6px",
-            borderRadius: "4px",
-            border: "1px solid #333",
-            background: "#1a1a2e",
-            color: "white",
+            padding: "8px",
+            borderRadius: "6px",
+            border: "1px solid #cbd5e1",
+            background: "#ffffff",
+            color: "#0f172a",
             fontSize: "12px",
-            marginBottom: "6px"
+            marginBottom: "8px",
+            outline: "none",
+            boxSizing: "border-box"
           }}
         />
         <input
@@ -241,16 +254,18 @@ const [mlPrediction, setMlPrediction] = useState<MlPrediction | null>(null);
           onChange={(e) => setCustomAddress(e.target.value)}
           style={{
             width: "100%",
-            padding: "6px",
-            borderRadius: "4px",
-            border: "1px solid #333",
-            background: "#1a1a2e",
-            color: "white",
+            padding: "8px",
+            borderRadius: "6px",
+            border: "1px solid #cbd5e1",
+            background: "#ffffff",
+            color: "#0f172a",
             fontSize: "12px",
-            marginBottom: "4px"
+            marginBottom: "6px",
+            outline: "none",
+            boxSizing: "border-box"
           }}
         />
-        <p style={{ fontSize: "10px", color: "#666", margin: "0 0 6px" }}>
+        <p style={{ fontSize: "11px", color: "#64748b", margin: "0 0 10px" }}>
           Tip: Street Name City State — no commas needed
         </p>
         <button
@@ -258,37 +273,46 @@ const [mlPrediction, setMlPrediction] = useState<MlPrediction | null>(null);
           disabled={customLoading || !customAddress || !customName}
           style={{
             width: "100%",
-            padding: "6px",
-            background: customLoading ? "#333" : "#533483",
+            padding: "8px",
+            background: customLoading ? "#94a3b8" : "#2563eb",
             color: "white",
             border: "none",
             borderRadius: "6px",
             cursor: customLoading ? "not-allowed" : "pointer",
             fontSize: "12px",
-            fontWeight: "bold"
+            fontWeight: "bold",
+            transition: "background-color 0.2s"
           }}
         >
           {customLoading ? "Finding location..." : "Check Traffic"}
         </button>
         {customResult && (
           <div style={{
-            marginTop: "8px",
-            background: "#0d0d1a",
+            marginTop: "12px",
+            background: "#f1f5f9",
             borderRadius: "6px",
-            padding: "8px",
+            padding: "10px",
             fontSize: "12px",
-            color: "#ddd",
+            color: "#334155",
             lineHeight: "1.6",
-            whiteSpace: "pre-wrap"
+            whiteSpace: "pre-wrap",
+            border: "1px solid #e2e8f0"
           }}>
             {customResult}
           </div>
         )}
       </div>
 
+      {/* Custom Locations List */}
       {customLocations.length > 0 && (
-        <div style={{ background: "#0f3460", borderRadius: "8px", padding: "12px" }}>
-          <p style={{ fontWeight: "bold", fontSize: "13px", margin: "0 0 8px" }}>
+        <div style={{ 
+          background: "#ffffff", 
+          borderRadius: "8px", 
+          padding: "16px",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+          border: "1px solid #e2e8f0"
+        }}>
+          <p style={{ fontWeight: "bold", fontSize: "13px", margin: "0 0 10px", color: "#1e293b" }}>
             Custom Locations ({customLocations.length})
           </p>
           {customLocations.map((loc) => {
@@ -299,15 +323,16 @@ const [mlPrediction, setMlPrediction] = useState<MlPrediction | null>(null);
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginBottom: "6px",
-                background: "#16213e",
+                marginBottom: "8px",
+                background: "#f8fafc",
+                border: "1px solid #e2e8f0",
                 borderRadius: "6px",
-                padding: "6px 8px"
+                padding: "8px 10px"
               }}>
                 <div>
-                  <p style={{ margin: 0, fontSize: "12px", fontWeight: "bold" }}>{loc.name}</p>
-                  <p style={{ margin: 0, fontSize: "11px", color }}>{label} ({loc.congestion_score})</p>
-                  <p style={{ margin: 0, fontSize: "10px", color: "#666" }}>{loc.city}</p>
+                  <p style={{ margin: 0, fontSize: "12px", fontWeight: "bold", color: "#0f172a" }}>{loc.name}</p>
+                  <p style={{ margin: "2px 0 0", fontSize: "11px", color, fontWeight: "600" }}>{label} ({loc.congestion_score})</p>
+                  <p style={{ margin: "2px 0 0", fontSize: "10px", color: "#64748b" }}>{loc.city}</p>
                 </div>
                 <button
                   onClick={() => onRemoveCustomLocation(loc.name)}
@@ -316,9 +341,10 @@ const [mlPrediction, setMlPrediction] = useState<MlPrediction | null>(null);
                     color: "white",
                     border: "none",
                     borderRadius: "4px",
-                    padding: "2px 8px",
+                    padding: "4px 8px",
                     cursor: "pointer",
-                    fontSize: "11px"
+                    fontSize: "11px",
+                    fontWeight: "bold"
                   }}
                 >
                   Remove
@@ -329,120 +355,131 @@ const [mlPrediction, setMlPrediction] = useState<MlPrediction | null>(null);
         </div>
       )}
 
-      {traffic.map((intersection) => {
-        const color = getCongestionColor(intersection.congestion_score);
-        const label = getCongestionLabel(intersection.congestion_score);
-        const isActive = activeIntersection === intersection.name;
+      {/* Traffic Intersections List */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        {traffic.map((intersection) => {
+          const color = getCongestionColor(intersection.congestion_score);
+          const label = getCongestionLabel(intersection.congestion_score);
+          const isActive = activeIntersection === intersection.name;
 
-        return (
-          <div
-            key={intersection.name}
-            style={{
-              background: isActive ? "#16213e" : "#0f3460",
-              borderRadius: "8px",
-              padding: "12px",
-              border: isActive ? `2px solid ${color}` : "2px solid transparent",
-              cursor: "pointer",
-            }}
-            onClick={() => onIntersectionClick(intersection)}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div>
-                <p style={{ fontWeight: "bold", margin: 0, fontSize: "14px" }}>
-                  {intersection.name}
-                </p>
-                <p style={{ color: "#888", margin: "2px 0 0", fontSize: "12px" }}>
-                  {intersection.city}
-                </p>
+          return (
+            <div
+              key={intersection.name}
+              style={{
+                background: isActive ? "#eff6ff" : "#ffffff",
+                borderRadius: "8px",
+                padding: "16px",
+                border: isActive ? `2px solid ${color}` : "1px solid #e2e8f0",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                cursor: "pointer",
+                transition: "all 0.2s"
+              }}
+              onClick={() => onIntersectionClick(intersection)}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <p style={{ fontWeight: "bold", margin: 0, fontSize: "14px", color: "#0f172a" }}>
+                    {intersection.name}
+                  </p>
+                  <p style={{ color: "#64748b", margin: "2px 0 0", fontSize: "12px" }}>
+                    {intersection.city}
+                  </p>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{
+                    background: color,
+                    color: "white",
+                    padding: "2px 8px",
+                    borderRadius: "12px",
+                    fontSize: "11px",
+                    fontWeight: "bold",
+                    display: "inline-block"
+                  }}>
+                    {label}
+                  </div>
+                  <p style={{ color, fontWeight: "bold", margin: "4px 0 0", fontSize: "16px" }}>
+                    {intersection.congestion_score.toFixed(2)}
+                  </p>
+                </div>
               </div>
-              <div style={{ textAlign: "right" }}>
+
+              {intersection.road_closure && (
                 <div style={{
-                  background: color,
+                  background: "#ef4444",
                   color: "white",
-                  padding: "2px 8px",
-                  borderRadius: "12px",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
                   fontSize: "11px",
+                  marginTop: "10px",
+                  display: "inline-block",
                   fontWeight: "bold"
                 }}>
-                  {label}
+                  ROAD CLOSURE
                 </div>
-                <p style={{ color, fontWeight: "bold", margin: "4px 0 0", fontSize: "16px" }}>
-                  {intersection.congestion_score.toFixed(2)}
-                </p>
-              </div>
+              )}
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  getRecommendation(intersection);
+                }}
+                style={{
+                  marginTop: "12px",
+                  width: "100%",
+                  padding: "8px",
+                  background: isActive ? "#1d4ed8" : "#2563eb",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  transition: "background-color 0.2s"
+                }}
+              >
+                {recLoading && isActive ? "Getting AI Recommendation..." : "Get AI Recommendation"}
+              </button>
+
+              {isActive && recommendation && (
+                <div style={{
+                  marginTop: "12px",
+                  background: "#f8fafc",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "6px",
+                  padding: "12px",
+                  fontSize: "12px",
+                  lineHeight: "1.6"
+                }}>
+                  <p style={{ color: "#1d4ed8", fontWeight: "bold", margin: "0 0 6px" }}>
+                    AI Recommendation
+                  </p>
+                  <p style={{ margin: 0, color: "#334155" }}>{stripMarkdown(recommendation)}</p>
+                  
+                  {explanation && (
+                    <>
+                      <p style={{ color: "#0369a1", fontWeight: "bold", margin: "12px 0 6px" }}>
+                        Congestion Explanation
+                      </p>
+                      <p style={{ margin: 0, color: "#334155" }}>{stripMarkdown(explanation)}</p>
+                    </>
+                  )}
+                  
+                  {mlPrediction && (
+                    <div style={{ marginTop: "12px", background: "#f0fdf4", padding: "8px", borderRadius: "4px", border: "1px solid #bbf7d0" }}>
+                      <p style={{ color: "#059669", fontWeight: "bold", margin: "0 0 4px" }}>
+                        ML Prediction (XGBoost)
+                      </p>
+                      <p style={{ margin: 0, color: "#166534", fontSize: "11px" }}>
+                        Current: {mlPrediction.current_congestion} → Predicted: {mlPrediction.predicted_congestion}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-
-            {intersection.road_closure && (
-              <div style={{
-                background: "#ef4444",
-                color: "white",
-                padding: "2px 8px",
-                borderRadius: "4px",
-                fontSize: "11px",
-                marginTop: "8px",
-                display: "inline-block"
-              }}>
-                ROAD CLOSURE
-              </div>
-            )}
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                getRecommendation(intersection);
-              }}
-              style={{
-                marginTop: "8px",
-                width: "100%",
-                padding: "6px",
-                background: "#533483",
-                color: "white",
-                border: "none",
-                borderRadius: "6px",
-                cursor: "pointer",
-                fontSize: "12px",
-                fontWeight: "bold"
-              }}
-            >
-              {recLoading && isActive ? "Getting AI Recommendation..." : "Get AI Recommendation"}
-            </button>
-
-            {isActive && recommendation && (
-              <div style={{
-                marginTop: "10px",
-                background: "#0d0d1a",
-                borderRadius: "6px",
-                padding: "10px",
-                fontSize: "12px",
-                lineHeight: "1.6"
-              }}>
-                <p style={{ color: "#a78bfa", fontWeight: "bold", margin: "0 0 6px" }}>
-                  AI Recommendation
-                </p>
-                <p style={{ margin: 0, color: "#ddd" }}>{stripMarkdown(recommendation)}</p>
-                {explanation && (
-                  <>
-                    <p style={{ color: "#60a5fa", fontWeight: "bold", margin: "10px 0 6px" }}>
-                      Congestion Explanation
-                    </p>
-                    <p style={{ margin: 0, color: "#ddd" }}>{stripMarkdown(explanation)}</p>
-                  </>
-                )}
-                {mlPrediction && (
-                  <div style={{ marginTop: "8px" }}>
-                    <p style={{ color: "#34d399", fontWeight: "bold", margin: "0 0 4px" }}>
-                      ML Prediction (XGBoost)
-                    </p>
-                    <p style={{ margin: 0, color: "#ddd", fontSize: "11px" }}>
-                      Current: {mlPrediction.current_congestion} → Predicted: {mlPrediction.predicted_congestion}
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
