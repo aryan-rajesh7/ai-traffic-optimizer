@@ -19,7 +19,7 @@ export default function Legend() {
       color: "#0f172a",
       fontSize: "12px",
     }}>
-      <p style={{ fontWeight: "bold", margin: "0 0 8px", fontSize: "11px", color: "#64748b" }}>
+      <p style={{ fontWeight: "bold", margin: "0 0 8px", fontSize: "11px", color: "#1e293b" }}>
         CONGESTION LEVEL
       </p>
       {items.map((item) => (
