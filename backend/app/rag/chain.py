@@ -72,7 +72,8 @@ Using the ACTUAL congestion score above provide:
 2. Exact signal timing in seconds for green/yellow/red
 3. Expected improvement percentage
 
-Be specific. Use the actual numbers. Keep under 150 words.
+Be specific. Use the actual numbers. Keep under 150 words. 
+Do NOT write a paragraph. Format your exact response strictly as a numbered list with each item on a new line.
     """
 
     response = client.models.generate_content(
@@ -88,7 +89,7 @@ def get_congestion_explanation(intersection_name: str, traffic_data: list) -> st
         return f"Intersection '{intersection_name}' not found."
 
     prompt = f"""
-You are a traffic analyst explaining conditions to a city manager.
+You are a traffic analyst explaining conditions to a person.
 You have REAL LIVE sensor data right now. Use it.
 
 {context}
@@ -98,7 +99,8 @@ Using the ACTUAL data above explain:
 2. What is likely causing it
 3. One immediate action to take
 
-Be specific. Use the actual numbers. Keep under 150 words.
+Be specific. Use the actual numbers. Keep under 150 words. 
+Do NOT write a paragraph. Format your exact response strictly as a numbered list with each item on a new line.
     """
 
     response = client.models.generate_content(
