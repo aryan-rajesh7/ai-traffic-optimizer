@@ -149,25 +149,25 @@ export default function Sidebar({
     return (
       <div style={{
         width: "380px",
-        background: "#f8fafc",
-        color: "#0f172a",
+        background: "#f9fafb", // Very light gray
+        color: "#1f2937", // Dark gray text
         padding: "16px",
         display: "flex",
         flexDirection: "column",
         gap: "12px",
-        borderRight: "1px solid #e2e8f0"
+        borderRight: "1px solid #e5e7eb"
       }}>
-        <div style={{ borderBottom: "1px solid #e2e8f0", paddingBottom: "12px" }}>
-          <div style={{ height: "20px", width: "60%", background: "#e2e8f0", borderRadius: "4px", marginBottom: "8px" }} />
-          <div style={{ height: "12px", width: "40%", background: "#e2e8f0", borderRadius: "4px" }} />
+        <div style={{ borderBottom: "1px solid #e5e7eb", paddingBottom: "12px" }}>
+          <div style={{ height: "20px", width: "60%", background: "#e5e7eb", borderRadius: "4px", marginBottom: "8px" }} />
+          <div style={{ height: "12px", width: "40%", background: "#e5e7eb", borderRadius: "4px" }} />
         </div>
         {[1, 2, 3, 4, 5].map((i) => (
           <div key={i} style={{
-            background: "#e2e8f0",
+            background: "#e5e7eb",
             borderRadius: "8px",
             padding: "12px",
             height: "80px",
-            opacity: Math.max(0.2, 1 - i * 0.15)
+            opacity: Math.max(0.3, 1 - i * 0.15)
           }} />
         ))}
       </div>
@@ -177,27 +177,27 @@ export default function Sidebar({
   return (
     <div style={{
       width: "380px",
-      background: "#f8fafc",
-      color: "#0f172a",
+      background: "#f9fafb", // Very light gray background
+      color: "#1f2937",
       padding: "16px",
       overflowY: "auto",
       display: "flex",
       flexDirection: "column",
       gap: "16px",
-      borderRight: "1px solid #e2e8f0"
+      borderRight: "1px solid #e5e7eb"
     }}>
 
       {/* Header */}
-      <div style={{ borderBottom: "1px solid #e2e8f0", paddingBottom: "12px" }}>
+      <div style={{ borderBottom: "1px solid #e5e7eb", paddingBottom: "12px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h1 style={{ fontSize: "18px", fontWeight: "bold", margin: 0, color: "#1e293b" }}>
+          <h1 style={{ fontSize: "18px", fontWeight: "bold", margin: 0, color: "#111827" }}>
             AI Traffic Optimizer
           </h1>
           <button
             onClick={onRefresh}
             disabled={refreshing}
             style={{
-              background: refreshing ? "#94a3b8" : "#2563eb",
+              background: refreshing ? "#d1d5db" : "#4b5563", // Gray buttons
               color: "white",
               border: "none",
               borderRadius: "6px",
@@ -211,7 +211,7 @@ export default function Sidebar({
             {refreshing ? "Refreshing..." : "Refresh"}
           </button>
         </div>
-        <p style={{ fontSize: "11px", color: "#64748b", margin: "6px 0 0" }}>
+        <p style={{ fontSize: "11px", color: "#6b7280", margin: "6px 0 0" }}>
           {lastUpdated
             ? `Last updated: ${lastUpdated.toLocaleTimeString()}`
             : "Loading live traffic data..."}
@@ -223,10 +223,10 @@ export default function Sidebar({
         background: "#ffffff", 
         borderRadius: "8px", 
         padding: "16px",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-        border: "1px solid #e2e8f0"
+        border: "1px solid #e5e7eb",
+        boxShadow: "0 1px 2px rgba(0,0,0,0.02)"
       }}>
-        <p style={{ fontWeight: "bold", fontSize: "13px", margin: "0 0 10px", color: "#1e293b" }}>
+        <p style={{ fontWeight: "bold", fontSize: "13px", margin: "0 0 10px", color: "#374151" }}>
           Check Custom Location
         </p>
         <input
@@ -238,9 +238,9 @@ export default function Sidebar({
             width: "100%",
             padding: "8px",
             borderRadius: "6px",
-            border: "1px solid #cbd5e1",
+            border: "1px solid #d1d5db",
             background: "#ffffff",
-            color: "#0f172a",
+            color: "#1f2937",
             fontSize: "12px",
             marginBottom: "8px",
             outline: "none",
@@ -256,16 +256,16 @@ export default function Sidebar({
             width: "100%",
             padding: "8px",
             borderRadius: "6px",
-            border: "1px solid #cbd5e1",
+            border: "1px solid #d1d5db",
             background: "#ffffff",
-            color: "#0f172a",
+            color: "#1f2937",
             fontSize: "12px",
             marginBottom: "6px",
             outline: "none",
             boxSizing: "border-box"
           }}
         />
-        <p style={{ fontSize: "11px", color: "#64748b", margin: "0 0 10px" }}>
+        <p style={{ fontSize: "11px", color: "#6b7280", margin: "0 0 10px" }}>
           Tip: Street Name City State — no commas needed
         </p>
         <button
@@ -274,7 +274,7 @@ export default function Sidebar({
           style={{
             width: "100%",
             padding: "8px",
-            background: customLoading ? "#94a3b8" : "#2563eb",
+            background: customLoading ? "#d1d5db" : "#4b5563",
             color: "white",
             border: "none",
             borderRadius: "6px",
@@ -289,14 +289,14 @@ export default function Sidebar({
         {customResult && (
           <div style={{
             marginTop: "12px",
-            background: "#f1f5f9",
+            background: "#f3f4f6",
             borderRadius: "6px",
             padding: "10px",
             fontSize: "12px",
-            color: "#334155",
+            color: "#374151",
             lineHeight: "1.6",
             whiteSpace: "pre-wrap",
-            border: "1px solid #e2e8f0"
+            border: "1px solid #e5e7eb"
           }}>
             {customResult}
           </div>
@@ -309,10 +309,10 @@ export default function Sidebar({
           background: "#ffffff", 
           borderRadius: "8px", 
           padding: "16px",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-          border: "1px solid #e2e8f0"
+          border: "1px solid #e5e7eb",
+          boxShadow: "0 1px 2px rgba(0,0,0,0.02)"
         }}>
-          <p style={{ fontWeight: "bold", fontSize: "13px", margin: "0 0 10px", color: "#1e293b" }}>
+          <p style={{ fontWeight: "bold", fontSize: "13px", margin: "0 0 10px", color: "#374151" }}>
             Custom Locations ({customLocations.length})
           </p>
           {customLocations.map((loc) => {
@@ -324,15 +324,15 @@ export default function Sidebar({
                 justifyContent: "space-between",
                 alignItems: "center",
                 marginBottom: "8px",
-                background: "#f8fafc",
-                border: "1px solid #e2e8f0",
+                background: "#f9fafb",
+                border: "1px solid #f3f4f6",
                 borderRadius: "6px",
                 padding: "8px 10px"
               }}>
                 <div>
-                  <p style={{ margin: 0, fontSize: "12px", fontWeight: "bold", color: "#0f172a" }}>{loc.name}</p>
+                  <p style={{ margin: 0, fontSize: "12px", fontWeight: "bold", color: "#1f2937" }}>{loc.name}</p>
                   <p style={{ margin: "2px 0 0", fontSize: "11px", color, fontWeight: "600" }}>{label} ({loc.congestion_score})</p>
-                  <p style={{ margin: "2px 0 0", fontSize: "10px", color: "#64748b" }}>{loc.city}</p>
+                  <p style={{ margin: "2px 0 0", fontSize: "10px", color: "#6b7280" }}>{loc.city}</p>
                 </div>
                 <button
                   onClick={() => onRemoveCustomLocation(loc.name)}
@@ -366,11 +366,11 @@ export default function Sidebar({
             <div
               key={intersection.name}
               style={{
-                background: isActive ? "#eff6ff" : "#ffffff",
+                background: isActive ? "#f3f4f6" : "#ffffff",
                 borderRadius: "8px",
                 padding: "16px",
-                border: isActive ? `2px solid ${color}` : "1px solid #e2e8f0",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                border: isActive ? `2px solid ${color}` : "1px solid #e5e7eb",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
                 cursor: "pointer",
                 transition: "all 0.2s"
               }}
@@ -378,10 +378,10 @@ export default function Sidebar({
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
-                  <p style={{ fontWeight: "bold", margin: 0, fontSize: "14px", color: "#0f172a" }}>
+                  <p style={{ fontWeight: "bold", margin: 0, fontSize: "14px", color: "#111827" }}>
                     {intersection.name}
                   </p>
-                  <p style={{ color: "#64748b", margin: "2px 0 0", fontSize: "12px" }}>
+                  <p style={{ color: "#6b7280", margin: "2px 0 0", fontSize: "12px" }}>
                     {intersection.city}
                   </p>
                 </div>
@@ -427,7 +427,7 @@ export default function Sidebar({
                   marginTop: "12px",
                   width: "100%",
                   padding: "8px",
-                  background: isActive ? "#1d4ed8" : "#2563eb",
+                  background: isActive ? "#374151" : "#6b7280",
                   color: "white",
                   border: "none",
                   borderRadius: "6px",
@@ -443,33 +443,33 @@ export default function Sidebar({
               {isActive && recommendation && (
                 <div style={{
                   marginTop: "12px",
-                  background: "#f8fafc",
-                  border: "1px solid #e2e8f0",
+                  background: "#ffffff",
+                  border: "1px solid #d1d5db",
                   borderRadius: "6px",
                   padding: "12px",
                   fontSize: "12px",
                   lineHeight: "1.6"
                 }}>
-                  <p style={{ color: "#1d4ed8", fontWeight: "bold", margin: "0 0 6px" }}>
+                  <p style={{ color: "#111827", fontWeight: "bold", margin: "0 0 6px" }}>
                     AI Recommendation
                   </p>
-                  <p style={{ margin: 0, color: "#334155" }}>{stripMarkdown(recommendation)}</p>
+                  <p style={{ margin: 0, color: "#4b5563" }}>{stripMarkdown(recommendation)}</p>
                   
                   {explanation && (
                     <>
-                      <p style={{ color: "#0369a1", fontWeight: "bold", margin: "12px 0 6px" }}>
+                      <p style={{ color: "#374151", fontWeight: "bold", margin: "12px 0 6px" }}>
                         Congestion Explanation
                       </p>
-                      <p style={{ margin: 0, color: "#334155" }}>{stripMarkdown(explanation)}</p>
+                      <p style={{ margin: 0, color: "#4b5563" }}>{stripMarkdown(explanation)}</p>
                     </>
                   )}
                   
                   {mlPrediction && (
-                    <div style={{ marginTop: "12px", background: "#f0fdf4", padding: "8px", borderRadius: "4px", border: "1px solid #bbf7d0" }}>
-                      <p style={{ color: "#059669", fontWeight: "bold", margin: "0 0 4px" }}>
+                    <div style={{ marginTop: "12px", background: "#f9fafb", padding: "8px", borderRadius: "4px", border: "1px solid #e5e7eb" }}>
+                      <p style={{ color: "#4b5563", fontWeight: "bold", margin: "0 0 4px" }}>
                         ML Prediction (XGBoost)
                       </p>
-                      <p style={{ margin: 0, color: "#166534", fontSize: "11px" }}>
+                      <p style={{ margin: 0, color: "#6b7280", fontSize: "11px" }}>
                         Current: {mlPrediction.current_congestion} → Predicted: {mlPrediction.predicted_congestion}
                       </p>
                     </div>
