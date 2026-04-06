@@ -25,10 +25,10 @@ interface SidebarProps {
 }
 
 function getCongestionColor(score: number): string {
-  if (score < 0.3) return "#22c55e"; // Green
-  if (score < 0.6) return "#eab308"; // Yellow
-  if (score < 0.8) return "#f97316"; // Orange
-  return "#ef4444"; // Red
+  if (score < 0.3) return "#22c55e";
+  if (score < 0.6) return "#eab308";
+  if (score < 0.8) return "#f97316";
+  return "#ef4444";
 }
 
 function getCongestionLabel(score: number): string {
@@ -453,14 +453,18 @@ export default function Sidebar({
                   <p style={{ color: "#1d4ed8", fontWeight: "bold", margin: "0 0 6px" }}>
                     AI Recommendation
                   </p>
-                  <p style={{ margin: 0, color: "#334155" }}>{stripMarkdown(recommendation)}</p>
+                  <p style={{ margin: 0, color: "#334155", whiteSpace: "pre-wrap" }}>
+                    {stripMarkdown(recommendation)}
+                  </p>
                   
                   {explanation && (
                     <>
                       <p style={{ color: "#0369a1", fontWeight: "bold", margin: "12px 0 6px" }}>
                         Congestion Explanation
                       </p>
-                      <p style={{ margin: 0, color: "#334155" }}>{stripMarkdown(explanation)}</p>
+                      <p style={{ margin: 0, color: "#334155", whiteSpace: "pre-wrap" }}>
+                        {stripMarkdown(explanation)}
+                      </p>
                     </>
                   )}
                   
