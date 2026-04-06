@@ -284,7 +284,7 @@ export default function Sidebar({
             transition: "background-color 0.2s"
           }}
         >
-          {customLoading ? "Finding location..." : "Check Traffic"}
+          {customLoading ? "Finding location..." : "Check Traffic/AI Reccomendation"}
         </button>
         {customResult && (
           <div style={{
