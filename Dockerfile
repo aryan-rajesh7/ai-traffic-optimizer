@@ -2,11 +2,10 @@ FROM python:3.11-slim
 
 WORKDIR /code
 
-COPY requirements.hf.txt .
-RUN pip install --no-cache-dir -r requirements.hf.txt
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/app /code/app
-COPY ml /code/ml
 
 EXPOSE 10000
 
