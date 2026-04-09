@@ -18,6 +18,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
+        "https://ai-traffic-optimizer.vercel.app",
         "https://*.vercel.app",
         "https://*.onrender.com",
     ],
