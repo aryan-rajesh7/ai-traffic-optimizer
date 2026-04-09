@@ -51,7 +51,7 @@ The AI Traffic Optimizer replaces static traffic light timing models with dynami
 **DevOps & Infrastructure**
 * Docker / Docker Compose (Containerization & local orchestration)
 * GitHub Actions (Automated CI/CD pipelines)
-* Vercel / Hugging Face Spaces / Koyeb (Cloud deployment & hosting environment)
+* Vercel / Render / Koyeb (Cloud deployment & hosting environment)
 
 **Tools**
 * Git / GitHub (Version control & repository management)
