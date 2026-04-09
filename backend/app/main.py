@@ -54,6 +54,7 @@ async def recommend(intersection_name: str):
         recommendation = get_signal_recommendation(intersection_name, fresh_data)
         return {"intersection": intersection_name, "recommendation": recommendation}
     except Exception as e:
+        print(f"RECOMMEND ERROR: {str(e)}")
         return {"intersection": intersection_name, "recommendation": f"AI temporarily unavailable — please try again in a minute."}
 
 @app.get("/explain/{intersection_name}")
