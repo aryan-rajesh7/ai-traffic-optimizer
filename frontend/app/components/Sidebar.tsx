@@ -190,7 +190,7 @@ export default function Sidebar({
       {/* Header */}
       <div style={{ borderBottom: "1px solid #e2e8f0", paddingBottom: "12px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h1 style={{ fontSize: "18px", fontWeight: "bold", margin: 0, color: "#1e293b" }}>
+          <h1 style={{ fontSize: "25px", fontWeight: "bold", margin: 0, color: "#1e293b" }}>
             AI Traffic Optimizer
           </h1>
           <button
@@ -211,9 +211,8 @@ export default function Sidebar({
             {refreshing ? "Refreshing..." : "Refresh"}
           </button>
         </div>
-        <p style={{ fontSize: "11px", color: "#64748b", margin: "6px 0 0" }}>
+        <p style={{ fontSize: "18px", color: "#64748b", margin: "6px 0 0" }}>
           {lastUpdated
-            ? `Last updated: ${lastUpdated.toLocaleTimeString()}`
             : "Loading live traffic data..."}
         </p>
       </div>
