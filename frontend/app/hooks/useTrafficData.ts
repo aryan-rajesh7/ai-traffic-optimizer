@@ -18,9 +18,7 @@ export function useTrafficData() {
   const [refreshing, setRefreshing] = useState(false);
   const [customLocations, setCustomLocations] = useState<Intersection[]>([]);
 
-  let retryDelay = 10000;
-
-  const fetchTraffic = useCallback(async (manual = false) => {
+  const fetchTraffic = useCallback(async (manual = false, retryDelay = 10000) => {
     if (manual) setRefreshing(true);
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/traffic`);
@@ -29,12 +27,11 @@ export function useTrafficData() {
       setTraffic(data.traffic ?? []);
       setLastUpdated(new Date());
       setError(null);
-      retryDelay = 10000;
     } catch {
-      setError("Backend waking up... Please wait 1-2 minutes");
-      retryDelay = Math.min(retryDelay * 1.5, 60000);
-      if (document.visibilityState === "visible") {
-        setTimeout(() => fetchTraffic(), retryDelay);
+      setError("Backend starting up...");
+      const nextDelay = Math.min(retryDelay * 1.5, 60000);
+      if (typeof document !== "undefined" && document.visibilityState === "visible") {
+        setTimeout(() => fetchTraffic(false, nextDelay), retryDelay);
       }
     } finally {
       setLoading(false);
@@ -43,18 +40,7 @@ export function useTrafficData() {
   }, []);
 
   useEffect(() => {
-    let cancelled = false;
-    const load = async () => {
-      await fetchTraffic();
-    };
-    load();
-    const interval = setInterval(() => {
-      if (!cancelled) fetchTraffic();
-    }, 30000);
-    return () => {
-      cancelled = true;
-      clearInterval(interval);
-    };
+    fetchTraffic();
   }, [fetchTraffic]);
 
   const addCustomLocation = (location: Intersection) => {
