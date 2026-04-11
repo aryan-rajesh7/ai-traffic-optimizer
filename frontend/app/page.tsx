@@ -113,7 +113,6 @@ export default function Home() {
         customLocations={customLocations}
       />
 
-      <MLGraphs />
     </main>
   );
 }
