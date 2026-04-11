@@ -1,6 +1,6 @@
 # AI Traffic Optimizer
 
-A full-stack, real-time Geographic Information System (GIS) that optimizes urban signal flow using live TomTom API telemetry, WebSocket orchestration, and Gemini 2.0 Flash RAG.
+A full-stack, real-time Geographic Information System (GIS) that optimizes urban signal flow using live TomTom API telemetry, WebSocket orchestration, and Google Gemma 3.0 RAG.
 
 ## Overview
 
