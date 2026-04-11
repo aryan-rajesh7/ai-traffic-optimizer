@@ -211,10 +211,7 @@ export default function Sidebar({
             {refreshing ? "Refreshing..." : "Refresh"}
           </button>
         </div>
-        <p style={{ fontSize: "18px", color: "#64748b", margin: "6px 0 0" }}>
-          {lastUpdated
-            : "Loading live traffic data..."}
-        </p>
+        {lastUpdated?.toLocaleString() || "Loading live traffic data..."}
       </div>
 
       {/* Custom Location */}
