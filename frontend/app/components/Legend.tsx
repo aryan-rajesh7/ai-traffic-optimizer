@@ -18,6 +18,9 @@ export default function Legend() {
       padding: "10px 14px",
       color: "#0f172a",
       fontSize: "12px",
+      position: "fixed", 
+      bottom: "20px",    
+      left: "20px",      
     }}>
       <p style={{ fontWeight: "bold", margin: "0 0 8px", fontSize: "11px", color: "#1e293b" }}>
         CONGESTION LEVEL
@@ -35,7 +38,7 @@ export default function Legend() {
             borderRadius: "50%",
             background: item.color,
             border: "2px solid #ffffff",
-            boxShadow: "0 0 0 1px #e2e8f0", // Helps the white border stand out against the light bg
+            boxShadow: "0 0 0 1px #e2e8f0", 
             flexShrink: 0
           }} />
           <span style={{ fontWeight: "500" }}>{item.label}</span>
