@@ -10,7 +10,7 @@ export default function Legend() {
 
   return (
     <div style={{
-      background: "rgba(255, 255, 255, 0.9)",
+      background: "rgba(255,255,255,0.9)",
       backdropFilter: "blur(8px)",
       border: "1px solid #e2e8f0",
       boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
@@ -18,9 +18,11 @@ export default function Legend() {
       padding: "10px 14px",
       color: "#0f172a",
       fontSize: "12px",
-      position: "fixed", 
-      bottom: "20px",    
-      left: "20px",      
+      position: "fixed",
+      bottom: "20px",
+      left: "20px",
+      zIndex: 9997,
+      pointerEvents: "none"
     }}>
       <p style={{ fontWeight: "bold", margin: "0 0 8px", fontSize: "11px", color: "#1e293b" }}>
         CONGESTION LEVEL
@@ -38,7 +40,7 @@ export default function Legend() {
             borderRadius: "50%",
             background: item.color,
             border: "2px solid #ffffff",
-            boxShadow: "0 0 0 1px #e2e8f0", 
+            boxShadow: "0 0 0 1px #e2e8f0",
             flexShrink: 0
           }} />
           <span style={{ fontWeight: "500" }}>{item.label}</span>
