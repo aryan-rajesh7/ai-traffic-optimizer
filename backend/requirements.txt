@@ -3,11 +3,3 @@ uvicorn
 httpx
 python-dotenv
 google-genai
-torch
-scikit-learn
-xgboost
-numpy
-pandas
-onnxruntime
-celery
-redis
