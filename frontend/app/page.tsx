@@ -38,15 +38,15 @@ export default function Home() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#0f0f1a",
-        color: "white",
+        background: "#ffffff",
+        color: "#333333",
         flexDirection: "column",
         gap: "16px"
       }}>
         <div style={{
           width: "48px",
           height: "48px",
-          border: "4px solid #533483",
+          border: "4px solid #4a90e2",
           borderTop: "4px solid transparent",
           borderRadius: "50%",
           animation: "spin 1s linear infinite"
@@ -55,8 +55,15 @@ export default function Home() {
         <p style={{ fontSize: "22px", fontWeight: "bold", margin: 0 }}>
           AI Traffic Optimizer
         </p>
-        <p style={{ fontSize: "15px", color: "#888", textAlign: "center", maxWidth: "420px", lineHeight: "1.6", margin: 0 }}>
-          Backend is starting up — please wait 1-2 minutes.
+        <p style={{
+          fontSize: "15px",
+          color: "#888888",
+          textAlign: "center",
+          maxWidth: "420px",
+          lineHeight: "1.6",
+          margin: 0
+        }}>
+          Due to free tier limitations on Render, backend will take 2-3 minutes to start up.
           The page will automatically load when ready, no refresh needed!
         </p>
       </div>
@@ -69,7 +76,7 @@ export default function Home() {
       height: "100vh",
       width: "100vw",
       overflow: "hidden",
-      background: "#0f0f1a",
+      background: "#ffffff",
       position: "relative"
     }}>
       <div style={{ flex: 1, position: "relative" }}>
