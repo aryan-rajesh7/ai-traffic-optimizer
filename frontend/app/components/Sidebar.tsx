@@ -155,7 +155,12 @@ export default function Sidebar({
         display: "flex",
         flexDirection: "column",
         gap: "12px",
-        borderRight: "1px solid #e2e8f0"
+        borderRight: "1px solid #e2e8f0",
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        top: 0,
+        zIndex: 50
       }}>
         <div style={{ borderBottom: "1px solid #e2e8f0", paddingBottom: "12px" }}>
           <div style={{ height: "20px", width: "60%", background: "#e2e8f0", borderRadius: "4px", marginBottom: "8px" }} />
@@ -184,7 +189,12 @@ export default function Sidebar({
       display: "flex",
       flexDirection: "column",
       gap: "16px",
-      borderRight: "1px solid #e2e8f0"
+      borderRight: "1px solid #e2e8f0",
+      position: "fixed",
+      bottom: 0,
+      left: 0,
+      top: 0,
+      zIndex: 50
     }}>
 
       {/* Header */}
