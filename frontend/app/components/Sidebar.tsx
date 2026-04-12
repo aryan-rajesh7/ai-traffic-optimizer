@@ -155,7 +155,12 @@ export default function Sidebar({
         display: "flex",
         flexDirection: "column",
         gap: "12px",
-        borderRight: "1px solid #e2e8f0"
+        borderRight: "1px solid #e2e8f0",
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        top: 0,
+        zIndex: 50
       }}>
         <div style={{ borderBottom: "1px solid #e2e8f0", paddingBottom: "12px" }}>
           <div style={{ height: "20px", width: "60%", background: "#e2e8f0", borderRadius: "4px", marginBottom: "8px" }} />
@@ -191,8 +196,6 @@ export default function Sidebar({
       top: 0,
       zIndex: 50
     }}>
-
-      {/* Header */}
       <div style={{ borderBottom: "1px solid #e2e8f0", paddingBottom: "12px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h1 style={{ fontSize: "25px", fontWeight: "bold", margin: 0, color: "#1e293b" }}>
@@ -219,7 +222,6 @@ export default function Sidebar({
         {lastUpdated?.toLocaleString() || "Loading live traffic data..."}
       </div>
 
-      {/* Custom Location */}
       <div style={{ 
         background: "#ffffff", 
         borderRadius: "8px", 
@@ -304,7 +306,6 @@ export default function Sidebar({
         )}
       </div>
 
-      {/* Custom Locations List */}
       {customLocations.length > 0 && (
         <div style={{ 
           background: "#ffffff", 
@@ -356,7 +357,6 @@ export default function Sidebar({
         </div>
       )}
 
-      {/* Traffic Intersections List */}
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         {traffic.map((intersection) => {
           const color = getCongestionColor(intersection.congestion_score);
@@ -469,16 +469,6 @@ export default function Sidebar({
                     </>
                   )}
                   
-                  {mlPrediction && (
-                    <div style={{ marginTop: "12px", background: "#f0fdf4", padding: "8px", borderRadius: "4px", border: "1px solid #bbf7d0" }}>
-                      <p style={{ color: "#059669", fontWeight: "bold", margin: "0 0 4px" }}>
-                        ML Prediction (XGBoost)
-                      </p>
-                      <p style={{ margin: 0, color: "#166534", fontSize: "11px" }}>
-                        Current: {mlPrediction.current_congestion} → Predicted: {mlPrediction.predicted_congestion}
-                      </p>
-                    </div>
-                  )}
                 </div>
               )}
             </div>
