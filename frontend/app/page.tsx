@@ -1,5 +1,4 @@
 "use client";
-
 import dynamic from "next/dynamic";
 import { useTrafficData, Intersection } from "./hooks/useTrafficData";
 import Sidebar from "./components/Sidebar";
@@ -86,7 +85,6 @@ export default function Home() {
           customLocations={customLocations}
         />
       </div>
-
       <div style={{
         position: "fixed",
         top: 0,
@@ -97,17 +95,7 @@ export default function Home() {
       }}>
         <StatsBar traffic={combinedTraffic} />
       </div>
-
-      <div style={{
-        position: "fixed",
-        bottom: "100px",
-        left: "12px",
-        zIndex: 9998,
-        pointerEvents: "none"
-      }}>
-        <Legend />
-      </div>
-
+      <Legend />
       <Sidebar
         traffic={traffic}
         loading={loading}
@@ -119,7 +107,6 @@ export default function Home() {
         onRemoveCustomLocation={removeCustomLocation}
         customLocations={customLocations}
       />
-
     </main>
   );
 }
