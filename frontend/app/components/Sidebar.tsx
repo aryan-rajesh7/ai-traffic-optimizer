@@ -149,6 +149,8 @@ export default function Sidebar({
     return (
       <div style={{
         width: "380px",
+        height: "100vh",
+        flexShrink: 0,
         background: "#f8fafc",
         color: "#0f172a",
         padding: "16px",
@@ -156,11 +158,6 @@ export default function Sidebar({
         flexDirection: "column",
         gap: "12px",
         borderLeft: "1px solid #e2e8f0",
-        position: "fixed",
-        bottom: 0,
-        left: 0,
-        top: 0,
-        zIndex: 50
       }}>
         <div style={{ borderBottom: "1px solid #e2e8f0", paddingBottom: "12px" }}>
           <div style={{ height: "20px", width: "60%", background: "#e2e8f0", borderRadius: "4px", marginBottom: "8px" }} />
@@ -182,6 +179,8 @@ export default function Sidebar({
   return (
     <div style={{
       width: "380px",
+      height: "100vh",
+      flexShrink: 0,
       background: "#f8fafc",
       color: "#0f172a",
       padding: "16px",
@@ -190,15 +189,12 @@ export default function Sidebar({
       flexDirection: "column",
       gap: "16px",
       borderLeft: "1px solid #e2e8f0",
-      position: "fixed",
-      bottom: 0,
-      left: 0,
-      top: 0,
-      zIndex: 50
     }}>
+
+      {/* Header */}
       <div style={{ borderBottom: "1px solid #e2e8f0", paddingBottom: "12px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h1 style={{ fontSize: "25px", fontWeight: "bold", margin: 0, color: "#1e293b" }}>
+          <h1 style={{ fontSize: "18px", fontWeight: "bold", margin: 0, color: "#1e293b" }}>
             AI Traffic Optimizer
           </h1>
           <button
@@ -213,18 +209,22 @@ export default function Sidebar({
               fontSize: "11px",
               cursor: refreshing ? "not-allowed" : "pointer",
               fontWeight: "bold",
-              transition: "background-color 0.2s"
             }}
           >
             {refreshing ? "Refreshing..." : "Refresh"}
           </button>
         </div>
-        {lastUpdated?.toLocaleString() || "Loading live traffic data..."}
+        <p style={{ fontSize: "11px", color: "#64748b", margin: "6px 0 0" }}>
+          {lastUpdated
+            ? `Last updated: ${lastUpdated.toLocaleTimeString()}`
+            : "Loading live traffic data..."}
+        </p>
       </div>
 
-      <div style={{ 
-        background: "#ffffff", 
-        borderRadius: "8px", 
+      {/* Custom Location */}
+      <div style={{
+        background: "#ffffff",
+        borderRadius: "8px",
         padding: "16px",
         boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
         border: "1px solid #e2e8f0"
@@ -284,10 +284,9 @@ export default function Sidebar({
             cursor: customLoading ? "not-allowed" : "pointer",
             fontSize: "12px",
             fontWeight: "bold",
-            transition: "background-color 0.2s"
           }}
         >
-          {customLoading ? "Finding location..." : "Check Traffic / AI Reccomendation"}
+          {customLoading ? "Finding location..." : "Check Traffic / AI Recommendation"}
         </button>
         {customResult && (
           <div style={{
@@ -306,10 +305,11 @@ export default function Sidebar({
         )}
       </div>
 
+      {/* Custom Locations List */}
       {customLocations.length > 0 && (
-        <div style={{ 
-          background: "#ffffff", 
-          borderRadius: "8px", 
+        <div style={{
+          background: "#ffffff",
+          borderRadius: "8px",
           padding: "16px",
           boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
           border: "1px solid #e2e8f0"
@@ -357,6 +357,7 @@ export default function Sidebar({
         </div>
       )}
 
+      {/* Traffic Intersections */}
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         {traffic.map((intersection) => {
           const color = getCongestionColor(intersection.congestion_score);
@@ -373,7 +374,6 @@ export default function Sidebar({
                 border: isActive ? `2px solid ${color}` : "1px solid #e2e8f0",
                 boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
                 cursor: "pointer",
-                transition: "all 0.2s"
               }}
               onClick={() => onIntersectionClick(intersection)}
             >
@@ -435,7 +435,6 @@ export default function Sidebar({
                   cursor: "pointer",
                   fontSize: "12px",
                   fontWeight: "bold",
-                  transition: "background-color 0.2s"
                 }}
               >
                 {recLoading && isActive ? "Getting AI Recommendation..." : "Get AI Recommendation"}
@@ -457,7 +456,6 @@ export default function Sidebar({
                   <p style={{ margin: 0, color: "#334155", whiteSpace: "pre-wrap" }}>
                     {stripMarkdown(recommendation)}
                   </p>
-                  
                   {explanation && (
                     <>
                       <p style={{ color: "#0369a1", fontWeight: "bold", margin: "12px 0 6px" }}>
@@ -468,7 +466,6 @@ export default function Sidebar({
                       </p>
                     </>
                   )}
-                  
                 </div>
               )}
             </div>
