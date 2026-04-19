@@ -62,7 +62,7 @@ export default function Home() {
           lineHeight: "1.6",
           margin: 0
         }}>
-          Due to free tier limitations, backend will take 2-3 minutes to start up.
+          Due to free tier limitations, backend will take 1-2 minutes to start up.
           The page will automatically load when ready, no refresh needed!
         </p>
       </div>
