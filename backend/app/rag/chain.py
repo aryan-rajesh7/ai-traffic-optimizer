@@ -79,7 +79,7 @@ Be specific. Use the actual numbers. Keep under 150 words.
     """
 
     response = client.models.generate_content(
-        model="gemma-4-26b-a4b-it",
+        model="gemini-3.1-flash-lite",
         contents=prompt
     )
     return response.text
@@ -120,7 +120,7 @@ Be specific. Use the actual numbers. Keep under 150 words.
     """
 
     response = client.models.generate_content(
-        model="gemma-4-26b-a4b-it",
+        model="gemini-3.1-flash-lite",
         contents=prompt
     )
     return response.text
